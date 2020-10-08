@@ -5,6 +5,6 @@ it allows:
 * create rooms
 
 | H1   | H2 |
-+ ---- + --- +
+| ---- | --- |
 | aviad | ziv|
 

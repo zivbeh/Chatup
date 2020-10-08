@@ -1,6 +1,5 @@
 var nodemailer = require('nodemailer');
-
-
+// aviad
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {

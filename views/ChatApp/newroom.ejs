@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>newroom</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link rel="stylesheet" href="/stylesheets/NewRoomstyle.css">
+      </head>
+      <body class="body">
+        <%- include('../navbar'); -%>
+        <div class="container">
+          <% if (error != '') { %>
+            <div class="alert alert-danger" role="alert">
+              <h4 class="alert1" id="alert"><%= error %></h4>
+            </div>
+          <% } %>
+          <h1 class="SignUp">Create New Room</h1>
+          <form method="POST">
+            <div class="form-group">
+              <label class="fo" for="exampleInputEmail1">Name</label>
+              <input name='roomName' type="text" class="form-control roomName1" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Your Room Name">
+            </div>
+            <div class="form-group">
+                <label class="fo" for="exampleInputPassword1">Participants</label>
+                <input name='Users' type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter your Participants Email">
+            </div>
+        
+            <input type="submit" class="btn btn-primary btn-lg active btn-block Create" value="Create" />
+          </form>
+        </div>
+      </body>
+</html>

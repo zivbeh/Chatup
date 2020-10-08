@@ -1,0 +1,39 @@
+.body {
+    background-image: url("https://img3.goodfon.com/original/1920x1080/1/3d/nature-sunset-mountains-sky-1748.jpg");
+    object-fit: cover;
+    background-size: cover;
+    background-attachment: fixed;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.container {
+    margin-top: 40px!important;
+    font: "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.h1 {
+    font-size: 45px;
+    color: #8a3667;
+}
+
+.fo{
+    font-size: 27px;
+    color: rgb(46 56 67 / 91%);
+}
+
+.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
+    color: rgb(255 255 255 / 75%);
+}
+
+.Create{
+    background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, rgb(206 159 59) 30%, #be9535 40%, transparent 80%),
+    radial-gradient(ellipse farthest-corner at left top, #FEDB37 0%, #FDB931 8%, #d4a43e 25%, #e8b741 62.5%, #e9b235 100%)
+}
+
+.SignUp {
+    color: rgb(116 39 96 / 84%);
+}
+
+.alert1 {
+    text-align: center;
+}

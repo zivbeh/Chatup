@@ -1,5 +1,5 @@
 const db = require('./models');
-
+// aviad
 async function createUser(name, pass, mail){
     console.log('here');
     await db.Users.create(

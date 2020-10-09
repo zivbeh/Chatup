@@ -101,10 +101,11 @@ function init(server) {
                 required: false,
                 through: {
                   model: db.User_Rooms,
-                }
-              }, db.Message]});
-            console.log(room, newRoom, oldRoom);
-            socket.leave(oldRoom);
+                }//                                                                          __
+              }, db.Message]});//                                                           /  \
+            console.log(room, newRoom, oldRoom);//                                         |~  ~|
+            socket.leave(oldRoom); // you need to make every user belongs to iceCream room !Done!
+            console.log(room)//                                                            \____/
             socket.data.activeRoom = room;    ////it is adding to every body |
             socket.join(newRoom); //                      fix here          \|/
             for(let b of room[0].dataValues.Messages){ //                    *   

@@ -91,12 +91,6 @@ router.post('/Message', async function(req, res, next) {
     await db.User_Rooms.create({
         UserId:2, ChatRoomId:12
     });
-    await db.User_Rooms.create({
-        UserId:2, ChatRoomId:1
-    });
-    await db.User_Rooms.create({
-        UserId:1, ChatRoomId:12
-    });
     res.send('all` messages deleted!');
 });
 

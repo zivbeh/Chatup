@@ -34,10 +34,10 @@ router.post('/', async function(req, res, next) {
     { Name: req.body.Name, Password: req.body.Password, Email: req.body.Email }
   );
 
-  const userss = await User.findOne({ where: { Email: req.body.Email } });
-  console.log(user, userss);
+  const wronguser = await User.findOne({ where: { Email: req.body.Email } });
+  console.log(user, wronguser);
 
-  const wronguser = await User.findOne({ where: { Email: req.body.Email }});
+  //const wronguser = await User.findOne({ where: { Email: req.body.Email }});
   if(!wronguser || wronguser === null || wronguser == undefined){
     req.flash('error',`Wrong Email:  ${req.body.Email}`);
     return res.redirect('/users');
@@ -63,6 +63,9 @@ router.post('/', async function(req, res, next) {
   }
   console.log(user.dataValues.id);
   req.logIn(user.dataValues, function(err) {
+    await db.User_Rooms.create({
+      UserId:wronguser.dataValues.id, ChatRoomId:1
+    });
     console.log('logIn');
     console.log('inserted');
     //req.flash('success',`New User connected:  ${req.body.Name}`);

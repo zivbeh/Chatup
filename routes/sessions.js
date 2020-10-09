@@ -18,8 +18,8 @@ passport.authenticate('local', {
     failureFlash: true
     }),
     function(req, res, next) {
-        console.log('new user connected');
-        socketio.io.sockets.emit('msg', `New user connected: ${req.user}`);
+        console.log('new user connected --------------------------------------12312312312312321');
+        //socketio.io.sockets.emit('msg', `New user connected: ${req.user}`);
     }
 );
 

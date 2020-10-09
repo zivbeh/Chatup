@@ -62,7 +62,7 @@ router.post('/', async function(req, res, next) {
     return res.render('users/new', { user, error: req.flash('error'), user: req.user});
   }
   console.log(user.dataValues.id);
-  req.logIn(user.dataValues, function(err) {
+  req.logIn(user.dataValues, async function(err) {
     await db.User_Rooms.create({
       UserId:wronguser.dataValues.id, ChatRoomId:1
     });

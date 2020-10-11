@@ -109,7 +109,7 @@
     $roomList.on('click', '.room', function (ev) {
         const newRoomName = ev.target.textContent;
         if (currentRoom === newRoomName) return;
-        $panel.html('');
+
         server.changeRoom(currentRoom, newRoomName);
 
         var height = $('main').height();
@@ -120,7 +120,7 @@
 
         $('.room.active').removeClass('active');
         $(ev.target).addClass('active');
-        
+        $panel.html('');
         console.log('panel is nothing');
         currentRoom = newRoomName;
     });

@@ -17,6 +17,7 @@ function init(server) {
 
         let req = { connection: { encrypted: false }, headers: { cookie: cookieString } };
         let res = { getHeader: () => { }, setHeader: () => { } };
+        console.log(socket.id,'----------------------d---------------------------')
 
         //const lobby = await db.ChatRoom.findOne({where:{ roomName: 'iceCream' }, include: [db.Message]});
         const lobby  = await db.ChatRoom.findAll({where:{ roomName: 'iceCream' }, include: [{
@@ -107,10 +108,10 @@ function init(server) {
             socket.leave(oldRoom); // you need to make every user belongs to iceCream room !Done!
             console.log(room)//                                                            \____/
             socket.data.activeRoom = room;    ////it is adding to every body |
-            socket.join(newRoom); //                      fix here          \|/
+            socket.join(newRoom); //                      fix here          \|/ it send it to every body instead of only the current user
             for(let b of room[0].dataValues.Messages){ //                    *   
                 console.log(b.dataValues.message);
-                io.to(room[0].dataValues.roomName).emit('message', { text: b.dataValues.message, from: b.dataValues.UserId, id: socket.data.user.dataValues.id});
+                io.to(socket.id).emit('message', { text: b.dataValues.message, from: b.dataValues.UserId, id: socket.data.user.dataValues.id});
             }
         });
 

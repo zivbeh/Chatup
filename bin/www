@@ -22,7 +22,7 @@ app.set('port', port);
 var server = http.createServer(app);
 
 
-const socketserver = require('../liveupdate');
+const socketserver = require('../liveupdate').init;
 socketserver(server);
 /**
  * Listen on provided port, on all network interfaces.

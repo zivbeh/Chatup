@@ -30,7 +30,7 @@
                 $('.messagon').each(function () {
                 str = msg.text;
                 htmlfoo = str.match(/.{1,19}/g).join("<br/>");
-                console.log(htmlfoo)
+                //console.log(htmlfoo)
             });
                 
             } else {
@@ -42,7 +42,7 @@
             }
         }
 
-        console.log(msg.text, htmlfoo);
+        //console.log(msg.text, htmlfoo);
 
         if (typeof msg.id === Number){
             text = htmlfoo;
@@ -54,14 +54,16 @@
 
     
     window.App = {
-        createRoom(msg) {
-            console.log(msg);
+        createRoom(roomName) {
+            console.log(roomName)
+            $roomList.append(`<li class="room">${roomName}</li>`)
         },
 
         newMessage(msg) {
-            console.log(msg.id, '----------1234----------------------')
+            //console.log(msg.id, '----------1234----------------------')
 
             const text = messageon(msg);
+            console.log(msg);
 
             if(msg.from === 'Server') {
                 $panel.append(`<div class="poc">
@@ -73,7 +75,7 @@
                     </div>
                 </div>
             </div>`);
-            } else if(msg.from === $user[0].textContent || msg.from === msg.id){
+            } else if(msg.from === $user[0].textContent){
             $panel.append(`<div class="poc">
             <div class="_2hqOq message-in" tabindex="-1">
                 <div class="_2et95 my">
@@ -124,10 +126,12 @@
         console.log('panel is nothing');
         currentRoom = newRoomName;
     });
-
-    if($flash != ''){
-        server.createRoom($flash);
+    window.onload = function(){ // will never get here becouse it haven't been reloaded
+        if($flash != ''){
+            server.createRoom($flash);
+        }
     }
+
 
     $myMessageBox.on('keydown', function (ev) {
         if(ev.keyCode === 13){

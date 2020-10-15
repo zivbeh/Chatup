@@ -16,6 +16,10 @@ body {
       max-width: 740px;
     }
 }
+
+.bg-light {
+  background-color: #f4dcc1!important;
+}
   
 @media (min-width: 320px) and (max-width: 760px) {
 .body{
@@ -223,7 +227,7 @@ margin-bottom: 15px;
 
 body {
 font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-background-image: url("/images/wp2672841.jpg");
+background-image: url("https://img5.goodfon.com/wallpaper/nbig/8/36/salenques-river-posets-maladeta-natural-park-aragon-spain-ar.jpg");
 object-fit: cover;
 background-size: cover;
 background-attachment: fixed;

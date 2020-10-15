@@ -5,6 +5,9 @@
     background-attachment: fixed;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+.bg-light {
+    background-color: #f4dcc1!important;
+}
 
 .container {
     margin-top: 40px!important;

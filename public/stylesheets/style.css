@@ -2,6 +2,10 @@
   --main-coordinates: (screen.width - 625)px;
 }
 
+.bg-light {
+  background-color:#f4dcc1!important;
+}
+
 @media (min-width: 625px) and (max-width: 992px) {
   .navbar-expand-lg .navbar-toggler {
     display: none;

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 const { Op } = require("sequelize");
+const liveUpdate1 = require("../liveupdate").flash;
 
 router.get('/', async function(req, res, next) {
     if (!req.user){
@@ -10,12 +11,13 @@ router.get('/', async function(req, res, next) {
     }
 
     // make here to say to socket io to on(createRoom)
-    // const Chosenroom;
-    // if(req.flash('success') != ''){
-    //     Chosenroom = req.flash('success');
-    // } else{
-    //     Chosenroom = null;
-    // }
+    //const Chosenroom;
+    if(req.flash('success') != ''){
+        //Chosenroom = req.flash('success');
+        liveUpdate1(req.flash('success'));
+    }// else{
+        //Chosenroom = null;
+    //}
 
     const room = await db.Users.findOne({ where: { id: req.user.dataValues.id }, 
         include: [{
@@ -28,7 +30,7 @@ router.get('/', async function(req, res, next) {
     });
     //                                           make Cosenroom be it,|, consider liveUpdate
     const lobby = await db.ChatRoom.findAll({where:{ roomName: 'iceCream' }, include: [db.Message]});
-    console.log(lobby,'--------------------------------------------------------------------')
+    //console.log(lobby,'--------------------------------------------------------------------')
     res.render('ChatApp/app', { rooms: room, activeRoom: lobby, user: req.user, flash: req.flash('success')  });
 });
 
@@ -48,7 +50,7 @@ router.post('/newroom', async function(req, res, next) {
         Email: array
     }});
     const arr = [];
-    console.log(room);
+    console.log(room,'-------------------NewRoomCreated----------------------');
     for (let i = 0; i < users.length; i++) {
         const useron = users[i];
         const a = await useron.addChatRoom(room, { through: {} });

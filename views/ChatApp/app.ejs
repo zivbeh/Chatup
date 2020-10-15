@@ -48,7 +48,7 @@
         <div class="sidebar">
             <button class="btn-new-room"><a href="/Chatup/NewRoom">Create Room</a></button>
 
-            <ul class="room-list">
+            <ul id="room-list" class="room-list">
                 <% rooms.dataValues.ChatRooms.forEach(room => { %>
                     <% if(room.roomName==='iceCream') { %>
                         <li class="active room"><%= room.roomName %></li>

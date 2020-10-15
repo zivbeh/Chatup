@@ -13,7 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Message, {
         onDelete: "cascade"
       });
-      this.belongsToMany(models.Users, { through: 'User_Rooms' });
+      this.belongsToMany(models.Users, { through: 'User_Rooms' }, {
+        onDelete: "cascade"
+      });
     }
   };
   rooms.init({

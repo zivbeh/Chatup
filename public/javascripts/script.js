@@ -6,12 +6,18 @@ function passwordShower() {
       x.type = "password";
     }
 }
-
-window.onload = function(){
+function heightsizer(){
   var height = $('main').height();
   console.log(height);
   var cons6 = document.getElementById('cons');
   cons6.style.height = height+"px";
+
+  var roomlist = document.getElementById('room-list');
+  roomlist.style.maxHeight = (height-65)+"px";
+}
+
+window.onload = function(){
+  heightsizer();
   
   const d = document.getElementById('cons');
   d.scrollTo(0,d.scrollHeight);
@@ -23,6 +29,8 @@ $(window).on('resize', function() {
   var cons1 = $('.main');
   var hie = cons1.height()-50;
   cons.style.maxHeight = hie+"px";
+
+  heightsizer();
 });
 
 var height = $(window).height();

@@ -8,8 +8,8 @@ const session = require('cookie-session')({
 });
 var flas = 'iceCream';
 function flash(flash){
-    console.log(flash);
-    flas = flash;
+    console.log(flash,'--------------------123456z-----------------------');
+    flas = flash[0];
 }
 
 // function lobb(){
@@ -66,30 +66,6 @@ function init(server) {
                 //console.log(socket.data.activeRoom)
                 io.to(socket.data.activeRoom[0].dataValues.roomName).emit('message', { from: 'Server', text: `User Joined: ${user.Name}`});
                 //console.log('new user', user.Email);
-                if(flas != 'iceCream'){
-                    console.log(flas)
-                    const room = await db.ChatRoom.findAll({where:{ roomName: flas }, include: [{
-                        model: db.Users,
-                        required: false,
-                        through: {
-                          model: db.User_Rooms, // room is [] fix this
-                        }
-                      }, db.Message]});
-                    if(room===[]){
-                        console.log('problem');
-                    } else {
-                        console.log(socket.data.activeRoom,'-----------------------------',room)
-                        io.emit('createRoom', room[0].dataValues.roomName);
-                        socket.leave(socket.data.activeRoom[0].dataValues.roomName);
-                        socket.data.activeRoom = room;  /// work now do it!<=
-                        socket.join(room[0].dataValues.roomName);
-                        console.log(room,'--------------gd-g-fg-f-g-f-------------123435----------------')
-                        io.emit('createRoom', room[0].dataValues.roomName);
-                        io.to(room[0].dataValues.roomName).emit('message', { text: `Room: ${room[0].dataValues.roomName} has been created`, from: 'Server'});
-                        io.to(room[0].dataValues.roomName).emit('message', { text: `${socket.data.user.dataValues.Name} has joined to: ${room[0].dataValues.roomName} by ${socket.data.user.dataValues.Name}`, from: 'Server'});
-                    }
-                }
-
             } else {
                 //console.log('--- 2 user not authenticatetd, bye bye');
                 socket.data = { user: 'Unknown', activeRoom: lobby };
@@ -98,6 +74,28 @@ function init(server) {
         });
 
         socket.join('iceCream');
+
+        if(flas != 'iceCream'){
+            console.log(flas)
+            const room = await db.ChatRoom.findAll({where:{ roomName: flas }, include: [{
+                model: db.Users,
+                required: false,
+                through: {
+                  model: db.User_Rooms, // room is [] fix this
+                }
+              }, db.Message]});
+            if(room===[]){
+                console.log('problem');
+            } else {
+                console.log(room,'--------------gd-g-fg-f-g-f-------------123435----------------')
+                io.emit('createRoom', room[0].dataValues.roomName);
+                // socket.leave(socket.data.activeRoom[0].dataValues.roomName);
+                // socket.data.activeRoom = room;  /// work now do it!<=
+                // socket.join(room[0].dataValues.roomName);
+                io.to(room[0].dataValues.roomName).emit('message', { text: `Room: ${room[0].dataValues.roomName} has been created`, from: 'Server'});
+                io.to(room[0].dataValues.roomName).emit('message', { text: `${socket.data.user.dataValues.Name} has joined to: ${room[0].dataValues.roomName} by ${socket.data.user.dataValues.Name}`, from: 'Server'});
+            }
+        }
 
         socket.on('message', async function(text, id) {
             console.log('new message: ', text, id);

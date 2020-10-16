@@ -10,10 +10,6 @@ router.get('/', async function(req, res, next) {
         res.redirect('/sessions');
     }
 
-    if(req.flash('success') != ''){
-        liveUpdate1(req.flash('success'));
-    }
-
     const room = await db.Users.findOne({ where: { id: req.user.dataValues.id }, 
         include: [{
             model: db.ChatRoom,
@@ -25,6 +21,11 @@ router.get('/', async function(req, res, next) {
     });
 
     const lobby = await db.ChatRoom.findAll({where:{ roomName: 'iceCream' }, include: [db.Message]});
+
+    if(req.flash('success') != ''){
+        liveUpdate1(req.flash('success'));
+    }
+    console.log(req.flash('info'))
 
     res.render('ChatApp/app', { rooms: room, activeRoom: lobby, user: req.user, flash: req.flash('success')  });
 });
@@ -49,7 +50,7 @@ router.post('/newroom', async function(req, res, next) {
         console.log('work');
     }
     const a = await user.addChatRoom(room, { through: {} });
-    req.flash('success', `${room.dataValues.roomName}`);
+    req.flash('info', `${req.body.roomName}`);
     res.redirect('/Chatup');
 });
 

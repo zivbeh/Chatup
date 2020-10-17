@@ -8,7 +8,7 @@
       </head>
       <body class="body">
         <%- include('../navbar'); -%>
-        <div class="container">
+        <div class="container" id="container">
           <% if (error != '') { %>
             <div class="alert alert-danger" role="alert">
               <h4 class="alert1" id="alert"><%= error %></h4>
@@ -25,9 +25,13 @@
                 <input name='Users' type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter your Participants Email">
             </div>
         
-            <input type="submit" class="btn btn-primary btn-lg active btn-block Create" value="Create" />
+            <input type="submit" class="btn btn-primary btn-lg active btn-block Create" id="create" disabled="false" value="Create" />
           </form>
         </div>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
         <script src="/javascripts/newroom.js"></script>
       </body>
 </html>

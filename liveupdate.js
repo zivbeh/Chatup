@@ -9,36 +9,14 @@ const session = require('cookie-session')({
 var flas = 'iceCream';
 function flash(flash){
     console.log(flash,'--------------------123456z-----------------------');
-    flas = flash[0];
+    flas = flash;
 }
-
-// function lobb(){
-//     console.log('-------------------------------------------------lobby--------------------------------------------');
-//     return new Promise(async (resolve, reject) => {
-//         const lobby  = await db.ChatRoom.findAll({where:{ roomName: flas }, include: [{
-//             model: db.Users,
-//             required: false,
-//             through: {
-//               model: db.User_Rooms,
-//             }
-//         }, db.Message]});
-    
-//         if(done) {
-//           resolve(lobby);
-//         }
-    
-//         //call reject if something isn't right
-//         reject('something went wrong');
-//       });
-// }
-// const lobby = lobb(); 
-
 
 function init(server) {
     const io = socketio(server);
     init.io = io;
 
-    io.on('connection', async socket => { // i need to have a way to comunicate with the routes
+    io.on('connection', async socket => {
         let cookieString = socket.request.headers.cookie;
 
         let req = { connection: { encrypted: false }, headers: { cookie: cookieString } };
@@ -53,8 +31,6 @@ function init(server) {
             }
         }, db.Message]});
 
-        //const lobby = await db.ChatRoom.findOne({where:{ roomName: 'iceCream' }, include: [db.Message]});
-
         session(req, res,  async () => {
             if (req.session && req.session.passport && req.session.passport.user) {
                 console.log(lobby,'-----------dfdf---------------------------fdfd------');
@@ -63,11 +39,8 @@ function init(server) {
                 });
 
                 socket.data = { user: user, activeRoom: lobby };
-                //console.log(socket.data.activeRoom)
                 io.to(socket.data.activeRoom[0].dataValues.roomName).emit('message', { from: 'Server', text: `User Joined: ${user.Name}`});
-                //console.log('new user', user.Email);
             } else {
-                //console.log('--- 2 user not authenticatetd, bye bye');
                 socket.data = { user: 'Unknown', activeRoom: lobby };
                 socket.disconnect();
             }
@@ -81,17 +54,17 @@ function init(server) {
                 model: db.Users,
                 required: false,
                 through: {
-                  model: db.User_Rooms, // room is [] fix this
+                  model: db.User_Rooms,
                 }
               }, db.Message]});
             if(room===[]){
                 console.log('problem');
             } else {
                 console.log(room,'--------------gd-g-fg-f-g-f-------------123435----------------')
-                io.emit('createRoom', room[0].dataValues.roomName);
-                // socket.leave(socket.data.activeRoom[0].dataValues.roomName);
-                // socket.data.activeRoom = room;  /// work now do it!<=
-                // socket.join(room[0].dataValues.roomName);
+                io.emit('createRoom', flas);
+                socket.leave(socket.data.activeRoom[0].dataValues.roomName);
+                socket.data.activeRoom = room;
+                socket.join(room[0].dataValues.roomName);
                 io.to(room[0].dataValues.roomName).emit('message', { text: `Room: ${room[0].dataValues.roomName} has been created`, from: 'Server'});
                 io.to(room[0].dataValues.roomName).emit('message', { text: `${socket.data.user.dataValues.Name} has joined to: ${room[0].dataValues.roomName} by ${socket.data.user.dataValues.Name}`, from: 'Server'});
             }

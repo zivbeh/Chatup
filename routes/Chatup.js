@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const liveUpdate1 = require("../liveupdate").flash;
+var flas = null;
 
 router.get('/', async function(req, res, next) {
     if (!req.user){
@@ -10,7 +11,14 @@ router.get('/', async function(req, res, next) {
         res.redirect('/sessions');
     }
 
-    const room = await db.Users.findOne({ where: { id: req.user.dataValues.id }, 
+    const lobby = await db.ChatRoom.findAll({where:{ roomName: 'iceCream' }, include: [db.Message]});
+
+    var room;
+    var id = req.user.dataValues.id;
+    if(flas!=null){
+        console.log('a')
+        liveUpdate1(flas);
+        room = await db.Users.findOne({ where: { id: id, '$ChatRooms.roomName$': { [Op.ne]: flas } },  // use Op [Op.ne]: flas
         include: [{
             model: db.ChatRoom,
             required: false,
@@ -18,16 +26,23 @@ router.get('/', async function(req, res, next) {
             model: db.User_Rooms,
             }
         }]
-    });
-
-    const lobby = await db.ChatRoom.findAll({where:{ roomName: 'iceCream' }, include: [db.Message]});
-
-    if(req.flash('success') != ''){
-        liveUpdate1(req.flash('success'));
+        });
+    } else {
+        room = await db.Users.findOne({ where: { id: id },  // use Op [Op.ne]: flas
+        include: [{
+            model: db.ChatRoom,
+            required: false,
+            through: {
+            model: db.User_Rooms,
+            }
+        }]
+        });
     }
-    console.log(req.flash('info'))
 
-    res.render('ChatApp/app', { rooms: room, activeRoom: lobby, user: req.user, flash: req.flash('success')  });
+    console.log('-------------------------ds-------', flas) /// work here!
+
+    res.render('ChatApp/app', { rooms: room, activeRoom: lobby, user: req.user, flash: flas  });//fix here the flash
+    flas = null;
 });
 
 router.get('/NewRoom', function(req, res, next) {
@@ -36,6 +51,10 @@ router.get('/NewRoom', function(req, res, next) {
 
 router.post('/newroom', async function(req, res, next) {
     const user = req.user;
+    if (req.body.roomName.length >= 25){
+        req.flash('error', "RoomName must be in 25 Charcters");
+        return res.redirect('/NewRoom');
+    }
     const room = await db.ChatRoom.create({roomName: req.body.roomName});
     const array = req.body.Users.split(',');
     const users = await db.Users.findAll({where: {
@@ -50,9 +69,14 @@ router.post('/newroom', async function(req, res, next) {
         console.log('work');
     }
     const a = await user.addChatRoom(room, { through: {} });
-    req.flash('info', `${req.body.roomName}`);
+    // req.flash('info', `${req.body.roomName}`);
+    flas = req.body.roomName;
+    console.log(req.body.roomName,'------------------new-')
     res.redirect('/Chatup');
 });
+
+
+
 
 router.get('/Delete', async function(req, res, next) {
     await db.Message.destroy({ where: { id: 116 } }, {}); /// remember to change db.Message
@@ -71,11 +95,20 @@ router.post('/Message', async function(req, res, next) {
 });
 
 router.get('/all', async function(req, res, next) {
-    const array = ['zivbeh@gmail.com', 'abehar@gmail.com'];
-
-    const users = await db.Users.findAll({where: {
-        Email: array
-    }}).then(room => res.send(room));
+    //const room = await db.ChatRoom.findAll();
+    const room = await db.Users.findOne({ where: { id: 1, '$ChatRooms.roomName$': { [Op.ne]: 'iceCream' } },  // use Op [Op.ne]: flas
+        include: [{
+            model: db.ChatRoom,
+            required: false,
+            through: {
+            model: db.User_Rooms,
+            }
+            // where: {
+            //     roomName: { [Op.ne]: flas }
+            // }
+        }]
+    });
+    res.send(room);
 });
 
 module.exports = router;

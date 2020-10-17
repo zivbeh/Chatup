@@ -13,10 +13,10 @@
     const $user = $('.UserName').get();
     console.log($user);
 
-    const $flash1 = $('.alert').get();
-    console.log($flash1)
-    const $flash = $flash1[0].textContent;
-    console.log($flash)
+    // const $flash1 = $('.alert').get();
+    // console.log($flash1)
+    // const $flash = $flash1[0].textContent;
+    // console.log($flash)
 
     let currentRoom = 'iceCream';
 
@@ -126,12 +126,6 @@
         console.log('panel is nothing');
         currentRoom = newRoomName;
     });
-    window.onload = function(){ // will never get here becouse it haven't been reloaded
-        if($flash != ''){
-            server.createRoom($flash);
-        }
-    }
-
 
     $myMessageBox.on('keydown', function (ev) {
         if(ev.keyCode === 13){

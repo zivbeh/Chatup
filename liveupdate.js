@@ -68,6 +68,7 @@ function init(server) {
                 io.to(room[0].dataValues.roomName).emit('message', { text: `Room: ${room[0].dataValues.roomName} has been created`, from: 'Server'});
                 io.to(room[0].dataValues.roomName).emit('message', { text: `${socket.data.user.dataValues.Name} has joined to: ${room[0].dataValues.roomName} by ${socket.data.user.dataValues.Name}`, from: 'Server'});
             }
+            flas = 'iceCream';
         }
 
         socket.on('message', async function(text, id) {

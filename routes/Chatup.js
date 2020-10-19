@@ -55,11 +55,20 @@ router.post('/newroom', async function(req, res, next) {
         req.flash('error', "RoomName must be in 25 Charcters");
         return res.redirect('/NewRoom');
     }
+    if (req.body.Users != ''){
+        req.flash('error', "You must feel the participants field!");
+        return res.redirect('/NewRoom');
+    }
     const room = await db.ChatRoom.create({roomName: req.body.roomName});
     const array = req.body.Users.split(',');
     const users = await db.Users.findAll({where: {
         Email: array
     }});
+    if (!users || users === null){
+        console.log(users);
+        req.flash('error', "Some Users doesn;t exist!");
+        return res.redirect('/NewRoom');
+    }
     const arr = [];
     console.log(room,'-------------------NewRoomCreated----------------------');
     for (let i = 0; i < users.length; i++) {
@@ -69,7 +78,6 @@ router.post('/newroom', async function(req, res, next) {
         console.log('work');
     }
     const a = await user.addChatRoom(room, { through: {} });
-    // req.flash('info', `${req.body.roomName}`);
     flas = req.body.roomName;
     console.log(req.body.roomName,'------------------new-')
     res.redirect('/Chatup');
@@ -79,8 +87,8 @@ router.post('/newroom', async function(req, res, next) {
 
 
 router.get('/Delete', async function(req, res, next) {
-    await db.Message.destroy({ where: { id: 116 } }, {}); /// remember to change db.Message
-    await db.Message.destroy({ where: { id: 113 } }, {});
+    await db.User_Rooms.destroy({ where: { id: 106 } }, {}); /// remember to change the db
+    await db.User_Rooms.destroy({ where: { id: 107 } }, {});// on delete search on User_Rooms by the ChatRoomId!
     res.send('all messages deleted!');
 });
 

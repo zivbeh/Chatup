@@ -56,14 +56,11 @@
     window.App = {
         createRoom(roomName) {
             console.log(roomName)
-            $roomList.append(`<li class="room">${roomName}</li>`)
+            $roomList.append(`<li class="room"><span class="roomname">${roomName}</span> <i class='material-icons remove' onclick='removee(this)'>delete</i></li>`)
         },
 
         newMessage(msg) {
-            //console.log(msg.id, '----------1234----------------------')
-
             const text = messageon(msg);
-            console.log(msg);
 
             if(msg.from === 'Server') {
                 $panel.append(`<div class="poc">
@@ -75,7 +72,7 @@
                     </div>
                 </div>
             </div>`);
-            } else if(msg.from === $user[0].textContent){
+            } else if(msg.from === $user[0].textContent || msg.from === msg.id){
             $panel.append(`<div class="poc">
             <div class="_2hqOq message-in" tabindex="-1">
                 <div class="_2et95 my">
@@ -109,7 +106,12 @@
     }
 
     $roomList.on('click', '.room', function (ev) {
-        const newRoomName = ev.target.textContent;
+        console.log(ev.target)
+        var newRoomName = ev.target.textContent;
+        if (newRoomName === 'delete'){
+            newRoomName = ev.target.parentNode.textContent;
+        }
+        var newRoomName = newRoomName.replace(' delete','');
         if (currentRoom === newRoomName) return;
 
         server.changeRoom(currentRoom, newRoomName);
@@ -123,7 +125,6 @@
         $('.room.active').removeClass('active');
         $(ev.target).addClass('active');
         $panel.html('');
-        console.log('panel is nothing');
         currentRoom = newRoomName;
     });
 

@@ -27,6 +27,5 @@ $roomName.on('keydown', function (ev) {
         }
         button.disabled = false;
         chance = false;
-        return;
     }
 });

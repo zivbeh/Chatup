@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="/stylesheets/ChatStyle.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <title>ChatUp</title>
 </head>
 <%- include('../navbar'); -%>
@@ -51,9 +52,9 @@
             <ul id="room-list" class="room-list">
                 <% rooms.dataValues.ChatRooms.forEach(room => { %>
                     <% if(room.roomName==='iceCream') { %>
-                        <li class="active room"><%= room.roomName %></li>
+                        <li class="active room"><div class="parent"><span class="roomname"><%= room.roomName %></span> <i class='material-icons remove' href="/" >delete</i></div></li>
                     <% } else { %>
-                        <li class="room"><%= room.roomName %></li>
+                        <li class="room"><div class="parent"><span class="roomname"><%= room.roomName %></span> <i class='material-icons remove' href="/" >delete</i></div></li>
                     <% } %>
                 <% }) %>
             </ul>

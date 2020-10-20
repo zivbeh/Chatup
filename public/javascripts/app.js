@@ -3,6 +3,7 @@
         changeRoom(oldRoom, newRoom) { },
         sendMessage(text) { },
         createRoom(roomName) { },
+        deleteRoom(roomName) { },
     }
 
     const $panel = $('.cons');
@@ -12,11 +13,6 @@
 
     const $user = $('.UserName').get();
     console.log($user);
-
-    // const $flash1 = $('.alert').get();
-    // console.log($flash1)
-    // const $flash = $flash1[0].textContent;
-    // console.log($flash)
 
     let currentRoom = 'iceCream';
 
@@ -30,19 +26,15 @@
                 $('.messagon').each(function () {
                 str = msg.text;
                 htmlfoo = str.match(/.{1,19}/g).join("<br/>");
-                //console.log(htmlfoo)
             });
                 
             } else {
                 $('.messagon').each(function () {
                     str = msg.text;
                     htmlfoo = str.match(/.{1,46}/g).join("<br/>");
-                    //console.log(htmlfoo)
                 });
             }
         }
-
-        //console.log(msg.text, htmlfoo);
 
         if (typeof msg.id === Number){
             text = htmlfoo;
@@ -56,7 +48,12 @@
     window.App = {
         createRoom(roomName) {
             console.log(roomName)
-            $roomList.append(`<li class="room"><span class="roomname">${roomName}</span> <i class='material-icons remove' onclick='removee(this)'>delete</i></li>`)
+            $roomList.append(`<li class="room"><div class="parent"><span class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
+        },
+
+        deleteRoom(roomName) {
+            console.log(roomName)
+            //$roomList //delete here
         },
 
         newMessage(msg) {
@@ -110,6 +107,7 @@
         var newRoomName = ev.target.textContent;
         if (newRoomName === 'delete'){
             newRoomName = ev.target.parentNode.textContent;
+            return;
         }
         var newRoomName = newRoomName.replace(' delete','');
         if (currentRoom === newRoomName) return;
@@ -126,6 +124,13 @@
         $(ev.target).addClass('active');
         $panel.html('');
         currentRoom = newRoomName;
+    });
+
+    $roomList.on('click', '.remove ', function (ev) {
+        console.log('work!!!', ev.target.parentNode.parentNode);
+        ev.target.parentNode.parentNode.parentNode.removeChild(ev.target.parentNode.parentNode);
+        const target = ev.target.parentNode.parentNode.textContent;
+        server.deleteRoom(target.replace(' delete',''));
     });
 
     $myMessageBox.on('keydown', function (ev) {

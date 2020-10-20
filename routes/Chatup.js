@@ -51,26 +51,26 @@ router.get('/NewRoom', function(req, res, next) {
 
 router.post('/newroom', async function(req, res, next) {
     const user = req.user;
-    if (req.body.roomName.length >= 25){
-        req.flash('error', "RoomName must be in 25 Charcters");
-        return res.redirect('/NewRoom');
-    }
-    if (req.body.Users != ''){
-        req.flash('error', "You must feel the participants field!");
-        return res.redirect('/NewRoom');
-    }
+    // if (req.body.roomName.length >= 25){
+    //     req.flash('error', "RoomName must be in 25 Charcters");
+    //     return res.redirect('/NewRoom');
+    // }
+    // if (req.body.Users != ''){
+    //     req.flash('error', "You must feel the participants field!");
+    //     return res.redirect('/NewRoom');
+    // }
     const room = await db.ChatRoom.create({roomName: req.body.roomName});
     const array = req.body.Users.split(',');
     const users = await db.Users.findAll({where: {
         Email: array
     }});
-    if (!users || users === null){
-        console.log(users);
-        req.flash('error', "Some Users doesn;t exist!");
-        return res.redirect('/NewRoom');
-    }
+    // if (!users || users === null){
+    //     console.log(users);
+    //     req.flash('error', "Some Users doesn;t exist!");
+    //     return res.redirect('/NewRoom');
+    // }
     const arr = [];
-    console.log(room,'-------------------NewRoomCreated----------------------');
+    console.log(users,'-------------------NewRoomCreated----------------------');
     for (let i = 0; i < users.length; i++) {
         const useron = users[i];
         const a = await useron.addChatRoom(room, { through: {} });
@@ -87,8 +87,13 @@ router.post('/newroom', async function(req, res, next) {
 
 
 router.get('/Delete', async function(req, res, next) {
-    await db.User_Rooms.destroy({ where: { id: 106 } }, {}); /// remember to change the db
-    await db.User_Rooms.destroy({ where: { id: 107 } }, {});// on delete search on User_Rooms by the ChatRoomId!
+    const room = await db.ChatRoom.findOne({ where: { id: 20 } });
+    console.log(room)
+    //const users = await db.User_Rooms.findAll({ where: { ChatRoomId: 14 } });
+    //console.log(users);
+    //await room.destroy(); // this is the problem!!!!!
+    await room.destroy();
+    //await users.destroy();
     res.send('all messages deleted!');
 });
 

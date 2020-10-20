@@ -58,6 +58,7 @@ if(height == 568){
   const socket = io();
   socket.on('createRoom', App.createRoom);
   socket.on('message', App.newMessage);
+  socket.on('deleteRoom', App.deleteRoom);
 
   const server = {
       changeRoom(oldRoom, newRoom) {
@@ -66,6 +67,10 @@ if(height == 568){
 
       sendMessage(text, id) {
           socket.emit('message', text, id);
+      },
+
+      deleteRoom(room) {
+        socket.emit('deleteRoom', room);
       },
 
       createRoom(roomna) {

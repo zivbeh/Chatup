@@ -71,6 +71,16 @@ function init(server) {
             flas = 'iceCream';
         }
 
+        socket.on('deleteRoom', async function(roomName) {
+            console.log(roomName,'---------------------sd');
+            const room = await db.ChatRoom.findOne({ where: { roomName: roomName } });
+            console.log(room)
+            await db.User_Rooms.destroy({ where: { ChatRoomId: room.dataValues.id }})
+            await room.destroy();
+            
+            //await db.User_Rooms.destroy({ where: { id: 106 } }, {}); /// remember to change the db
+        });
+
         socket.on('message', async function(text, id) {
             console.log('new message: ', text, id);
             const from = socket.data.user;
@@ -99,11 +109,6 @@ function init(server) {
             socket.leave(socket.data.activeRoom[0].dataValues.roomName);
             socket.data.activeRoom = room;  /// work now do it!<=
             socket.join(room[0].dataValues.roomName);
-            //console.log(room,'--------------gd-g-fg-f-g-f-------------123435----------------')
-            // for(let b of room[0].dataValues.Messages){
-            //     //console.log(b.dataValues.message);
-            //     io.to(room[0].dataValues.roomName).emit('message', { text: b.dataValues.message, from: b.dataValues.UserId, id: socket.data.user.dataValues.id});
-            // }
             io.emit('createRoom', room[0].dataValues.roomName);
             io.to().emit('message', { text: `Room: ${room[0].dataValues.roomName} has been created`, from: 'Server'});
             io.to(room[0].dataValues.roomName).emit('message', { text: `${socket.data.user.dataValues.Name} has joined to: ${room[0].dataValues.roomName} by ${socket.data.user.dataValues.Name}`, from: 'Server'});

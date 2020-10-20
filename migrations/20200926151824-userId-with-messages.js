@@ -5,7 +5,8 @@ module.exports = {
     return queryInterface.addColumn('Messages', 'UserId', {
       type: Sequelize.INTEGER(11),
       foreignKey: true,
-      references: {model: "Users", key: "id"}
+      references: {model: "Users", key: "id"},
+      onDelete: 'CASCADE'
     });
   },
 

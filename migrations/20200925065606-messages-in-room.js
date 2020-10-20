@@ -4,7 +4,8 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn('Messages', 'ChatRoomId', {
       type: Sequelize.INTEGER(11),
-      references: {model: "ChatRooms", key: "id"}
+      references: {model: "ChatRooms", key: "id"},
+      onDelete: 'CASCADE'
     });
   },
 

@@ -52,9 +52,9 @@
             <ul id="room-list" class="room-list">
                 <% rooms.dataValues.ChatRooms.forEach(room => { %>
                     <% if(room.roomName==='iceCream') { %>
-                        <li class="active room"><div class="parent"><span class="roomname"><%= room.roomName %></span> <i class='material-icons remove' href="/" >delete</i></div></li>
+                        <li class="active room"><div class="parent"><span class="roomname"><%= room.roomName %></span> <i class='material-icons remove'>delete</i></div></li>
                     <% } else { %>
-                        <li class="room"><div class="parent"><span class="roomname"><%= room.roomName %></span> <i class='material-icons remove' href="/" >delete</i></div></li>
+                        <li class="room"><div class="parent"><span class="roomname"><%= room.roomName %></span> <i class='material-icons remove'>delete</i></div></li>
                     <% } %>
                 <% }) %>
             </ul>

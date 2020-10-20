@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Message, {
-        onDelete: "cascade"
+        onDelete: 'CASCADE'
       });
 
       this.belongsToMany(models.ChatRoom, { through: 'User_Rooms' }, {
-        onDelete: "cascade"
+        onDelete: 'CASCADE'
       });
     }
   };

@@ -78,7 +78,7 @@ function init(server) {
             await db.User_Rooms.destroy({ where: { ChatRoomId: room.dataValues.id }})
             await room.destroy();
             
-            //await db.User_Rooms.destroy({ where: { id: 106 } }, {}); /// remember to change the db
+            io.emit('deleteRoom', roomName);
         });
 
         socket.on('message', async function(text, id) {

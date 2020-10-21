@@ -10,6 +10,7 @@
     const $myMessageBox = $('.my-message-box');
 
     const $roomList = $('.room-list');
+    var list = document.getElementById("room-list");
 
     const $user = $('.UserName').get();
     console.log($user);
@@ -52,8 +53,15 @@
         },
 
         deleteRoom(roomName) {
-            console.log(roomName)
-            //$roomList //delete here
+            console.log(roomName, '-gfd-g-df-----gdf---readdy')
+            
+            const a = $(`li:contains(${roomName})`);
+            if($(`li:contains(${roomName})`)) {
+                console.log('found', a.parent()[0], a[0])
+                a.parent()[0].removeChild(a[0]); 
+            } else {
+                console.log('not found')
+            }
         },
 
         newMessage(msg) {
@@ -128,7 +136,7 @@
 
     $roomList.on('click', '.remove ', function (ev) {
         console.log('work!!!', ev.target.parentNode.parentNode);
-        ev.target.parentNode.parentNode.parentNode.removeChild(ev.target.parentNode.parentNode);
+        //ev.target.parentNode.parentNode.parentNode.removeChild(ev.target.parentNode.parentNode);
         const target = ev.target.parentNode.parentNode.textContent;
         server.deleteRoom(target.replace(' delete',''));
     });

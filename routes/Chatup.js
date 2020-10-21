@@ -87,12 +87,10 @@ router.post('/newroom', async function(req, res, next) {
 
 
 router.get('/Delete', async function(req, res, next) {
-    const room = await db.ChatRoom.findOne({ where: { id: 20 } });
-    console.log(room)
-    //const users = await db.User_Rooms.findAll({ where: { ChatRoomId: 14 } });
-    //console.log(users);
-    //await room.destroy(); // this is the problem!!!!!
-    await room.destroy();
+    // const room = await db.ChatRoom.findOne({ where: { id: 6 } });
+    // console.log(room)
+    await db.User_Rooms.destroy({ where: { ChatRoomId: 6 }})
+    //await room.destroy();
     //await users.destroy();
     res.send('all messages deleted!');
 });

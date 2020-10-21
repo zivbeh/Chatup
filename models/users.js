@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE'
       });
 
+      this.hasMany(models.Contacts, {
+        onDelete: 'CASCADE'
+      });
+
       this.belongsToMany(models.ChatRoom, { through: 'User_Rooms' }, {
         onDelete: 'CASCADE'
       });

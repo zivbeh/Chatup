@@ -13,8 +13,8 @@
     <div class='container'>
         <main class="main">
             <div id="cons" class="cons">
-                    <% activeRoom[0].Messages.forEach(msg => { %>
-                        <% if(user.dataValues.id === msg.UserId){ %>
+                    <% activeRoom.forEach(msg => { %>
+                        <% if(user.dataValues.id === msg.id){ %>
                             <div class="poc">
                                 <div class="_2hqOq message-in" tabindex="-1">
                                     <div class="_2et95 my">
@@ -48,6 +48,7 @@
 
         <div class="sidebar">
             <button class="btn-new-room"><a href="/Chatup/NewRoom">Create Room</a></button>
+            <button class="btn-new-room"><a href="/Chatup/NewContact">Create Contact</a></button>
 
             <ul id="room-list" class="room-list">
                 <% rooms.dataValues.ChatRooms.forEach(room => { %>

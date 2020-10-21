@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Contacts.init({
-    userName: DataTypes.STRING
+    userName: DataTypes.STRING,
+    RealUserId: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Contacts',

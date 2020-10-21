@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>newContact</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link rel="stylesheet" href="/stylesheets/NewRoomstyle.css">
+      </head>
+      <body class="body">
+        <%- include('../navbar'); -%>
+        <div class="container" id="container">
+          <% if (error != '') { %>
+            <div class="alert alert-danger" role="alert">
+              <h4 class="alert1" id="alert"><%= error %></h4>
+            </div>
+          <% } %>
+          <h1 class="SignUp">Create New Contact</h1>
+          <form method="POST">
+            <div class="form-group">
+              <label class="fo" for="exampleInputEmail1">Your Choosen Name</label>
+              <input name='ContactName' type="text" class="form-control roomName1" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Your Room Name">
+            </div>
+            <div class="form-group">
+                <label class="fo" for="exampleInputPassword1">Contact Email</label>
+                <input name='Users' type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter your Contact Email">
+            </div>
+        
+            <input type="submit" class="btn btn-primary btn-lg active btn-block Create" id="create" disabled="false" value="Create Contact" />
+          </form>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+        <script src="/javascripts/newroom.js"></script>
+      </body>
+</html>

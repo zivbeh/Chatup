@@ -104,6 +104,7 @@ function init(server) {
             } else {
                 
                 const Contacts = await db.User_Rooms.findAll({where:{ ChatRoomId: room[0].dataValues.id }});
+                console.log(Contacts.length, '-----0-0-0-0-0-0-0-0-0-0-----')
                 if(Contacts.length === 2){
                     const element = room[0];
                     const id = element.dataValues.id;
@@ -131,13 +132,17 @@ function init(server) {
                     if (name === null){
                         name = element.dataValues.roomName;
                         diction[element.dataValues.roomName] = name;
+                        io.emit('createRoom', name);
                     } else {
                         diction[element.dataValues.roomName] = name.dataValues.userName;
+                        io.emit('createRoom', name.dataValues.userName);
                     }
+                } else {
+                    io.emit('createRoom', flas);
                 }
 
-                console.log(room,'--------------gd-g-fg-f-g-f-------------123435----------------')
-                io.emit('createRoom', name);
+                console.log(diction, room,'--------------gd-g-fg-f-g-f-------------123435----------------')
+                console.log(name)
                 socket.leave(socket.data.activeRoom[0].dataValues.roomName);
                 socket.data.activeRoom = room;
                 socket.join(room[0].dataValues.roomName);

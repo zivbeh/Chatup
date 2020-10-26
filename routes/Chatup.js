@@ -158,7 +158,7 @@ router.post('/newcontact', async function(req, res, next) {
 
     // if only 1 user was written get the contact name to be the roomName
 
-    //res.redirect('/Chatup');
+    res.redirect('/Chatup');
 });
 
 router.post('/newroom', async function(req, res, next) {

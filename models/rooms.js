@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   rooms.init({
-    roomName: DataTypes.STRING
+    roomName: DataTypes.STRING,
+    Due: { type: DataTypes.BOOLEAN, defaultValue: false}
   }, {
     sequelize,
     modelName: 'ChatRoom',

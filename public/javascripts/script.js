@@ -54,6 +54,16 @@ if(height == 568){
 }
 
 
+var tiles = document.querySelector('body');
+const a = document.getElementById('input');
+
+a.addEventListener('input', function () {
+  var filter = 'hue-rotate(xdeg)'.replace('x', a.value);
+  console.log(filter, a.value)
+  tiles.style.filter = filter;
+}, false);
+
+
 (function () {
   const socket = io();
   socket.on('createRoom', App.createRoom);

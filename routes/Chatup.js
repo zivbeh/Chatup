@@ -12,8 +12,6 @@ router.get('/', async function(req, res, next) {
         res.redirect('/sessions');
     }
 
-    //const lobby = await db.ChatRoom.findAll({where:{ roomName: 'iceCream' }, include: [db.Message]});
-
     var room;
     var id = user.dataValues.id;
     if(flas!=null){
@@ -40,8 +38,60 @@ router.get('/', async function(req, res, next) {
         });
     }
 
-    console.log('-------------------------ds-------', flas) /// work here!
+    const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': id },
+        include: [{
+            model: db.Users,
+            required: false,
+            through: {
+                model: db.User_Rooms,
+            }
+        }]
+    });
 
+    console.log('-----2-----', roon)
+    var diction = {};
+    for (let index = 0; index < roon.length; index++) {
+        const element = roon[index];
+        const id = element.dataValues.id;
+        const li = await db.ChatRoom.findOne({ where: { id: id }, 
+            include: [{
+                model: db.Users,
+                required: false,
+                through: {
+                    model: db.User_Rooms,
+                }
+            }]
+        });
+        console.log(element, li)
+        var value0 = li.dataValues.Users[0].dataValues.id;
+        var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
+        var name;
+        if(id === value0){
+            console.log('-----1-----')
+            name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
+        } else {
+            console.log('-----0-----')
+            name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
+        }
+        console.log(name, value0, value1)
+        diction[element.dataValues.roomName] = name.dataValues.userName;
+    }
+
+    console.log(roon, diction, '-----dlskisdjfjsdndmbfsdbhsdjjhgjasbndamndahj-----')
+
+    const roomArr = [];
+    for (let index = 0; index < room.dataValues.ChatRooms.length; index++) {
+        const element = room.dataValues.ChatRooms[index];
+        if(diction.hasOwnProperty(`${element.dataValues.roomName}`)){
+            roomArr.push(diction[element.dataValues.roomName]);
+        } else {
+            roomArr.push(element.dataValues.roomName);
+        }
+    }
+    console.log(roomArr)
+
+    console.log('-------------------------ds-------', flas) 
+    
     if(room === []){
         return res.redirect('/Chatup/NewContact');
     }
@@ -52,12 +102,9 @@ router.get('/', async function(req, res, next) {
         var value = array[i].dataValues;
         dictionary[value.RealUserId] = value.userName;
     }
-    console.log(dictionary, array)
 
-    const messages = await db.ChatRoom.findOne({ where: { roomName: 'iceCream' }, include: [db.Message]});
-    console.log(messages)
+    const messages = await db.ChatRoom.findOne({ where: { roomName: 'iceCream' }, include: [db.Message]}); // change this to be more usefull
     const m = messages.dataValues.Messages;
-    console.log(m)
     var liMess = [];
     for (let c = 0; c < m.length; c++){
         var elm = m[c].dataValues;
@@ -65,15 +112,12 @@ router.get('/', async function(req, res, next) {
         var name = dictionary[userId];
         if (name === undefined){ // use the regular name
             const userr = await db.Users.findByPk(userId);
-            //console.log(userr)
             name = userr.dataValues.Name;
         }
         liMess.push({ UserId: name, message: elm.message, id: userId });
-        console.log(name)
     }
-    console.log(liMess)
 
-    res.render('ChatApp/app', { rooms: room, activeRoom: liMess, user: user, flash: flas  });//fix here the flash
+    res.render('ChatApp/app', { rooms: roomArr, activeRoom: liMess, user: user, flash: flas  });//fix here the flash
     flas = null;
 });
 
@@ -93,8 +137,8 @@ router.post('/newcontact', async function(req, res, next) {
         req.flash('error', 'user Email is invalid');
         return res.redirect('/Chatup/NewContact');
     }
-    console.log(changeuser, checkEmail)
-    const contactEmail = await db.Contacts.findOne({ where: { RealUserId: checkEmail.dataValues.id }});
+    console.log(changeuser, checkEmail, '-----------dsa')
+    const contactEmail = await db.Contacts.findOne({ where: { RealUserId: checkEmail.dataValues.id, UserId: user.dataValues.id }});
     if (contactEmail){
         contactEmail.userName = req.body.ContactName;
         contactEmail.save();
@@ -105,12 +149,14 @@ router.post('/newcontact', async function(req, res, next) {
         });
     }
 
+    // if only 1 user was written get the contact name to be the roomName
+
     res.redirect('/Chatup');
 });
 
 router.post('/newroom', async function(req, res, next) {
     const user = req.user;
-    const room = await db.ChatRoom.create({roomName: req.body.roomName});
+    const room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
     const array = req.body.Users.split(',');
     const users = await db.Users.findAll({where: {
         Email: array
@@ -155,20 +201,61 @@ router.post('/Message', async function(req, res, next) {
 });
 
 router.get('/all', async function(req, res, next) {
-    //const room = await db.ChatRoom.findAll();
-    const room = await db.Users.findOne({ where: { id: 1, '$ChatRooms.roomName$': { [Op.ne]: 'iceCream' } },  // use Op [Op.ne]: flas
+    const user = req.user;
+    console.log(user)
+    const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': user.dataValues.id },
         include: [{
-            model: db.ChatRoom,
+            model: db.Users,
             required: false,
             through: {
-            model: db.User_Rooms,
+                model: db.User_Rooms,
             }
-            // where: {
-            //     roomName: { [Op.ne]: flas }
-            // }
         }]
     });
-    res.send(room);
+
+    console.log('-----2-----', roon)
+    var diction = {};
+    for (let index = 0; index < roon.length; index++) {
+        const element = roon[index];
+        const id = element.dataValues.id;
+        const li = await db.ChatRoom.findOne({ where: { id: id }, 
+            include: [{
+                model: db.Users,
+                required: false,
+                through: {
+                    model: db.User_Rooms,
+                }
+            }]
+        });
+        console.log(element, li)
+        var value0 = li.dataValues.Users[0].dataValues.id;
+        var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
+        var name;
+        if(user.dataValues.id === value0){
+            console.log('-----1-----')
+            name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
+        } else {
+            console.log('-----0-----')
+            name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
+        }
+        console.log(name, value0, value1)
+        diction[element.dataValues.roomName] = name.dataValues.userName;
+    }
+
+    console.log(roon, contactsArray, diction, '-----dlskisdjfjsdndmbfsdbhsdjjhgjasbndamndahj-----')
+    // const room = await db.Users.findOne({ where: { id: 1, '$ChatRooms.roomName$': { [Op.ne]: 'iceCream' } },  // use Op [Op.ne]: flas
+    //     include: [{
+    //         model: db.ChatRoom,
+    //         required: false,
+    //         through: {
+    //         model: db.User_Rooms,
+    //         }
+    //         // where: {
+    //         //     roomName: { [Op.ne]: flas }
+    //         // }
+    //     }]
+    // });
+    res.send(diction);
 });
 
 module.exports = router;

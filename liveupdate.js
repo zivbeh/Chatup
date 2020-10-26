@@ -88,6 +88,7 @@ function init(server) {
             const x = from.dataValues.Name;
             console.log(room.dataValues, '----------------------', x, id)
             //io.to(room[0].dataValues.roomName).emit('message', { text: text, from: x, id: id });
+            //const contact = await db.Contacts.findOne({ where: { UserId: from.dataValues.id,  } });
 
             io.to(room.dataValues.roomName).emit('message', { text: text, from: x, id: id });
             //console.log(id);
@@ -127,9 +128,37 @@ function init(server) {
             //console.log(room)//                                                            \____/
             socket.data.activeRoom = room;    ////it is adding to every body |
             socket.join(newRoom); //                      fix here          \|/ it send it to every body instead of only the current user
-            for(let b of room[0].dataValues.Messages){ //                    *   
-                //console.log(b.dataValues.message);
-                io.to(socket.id).emit('message', { text: b.dataValues.message, from: b.dataValues.UserId, id: socket.data.user.dataValues.id});
+            var dictionary = {};
+
+            const array = await db.Contacts.findAll({ where: { UserId: socket.data.user.dataValues.id } });
+            for (let i = 0; i < array.length; i++){
+                var value = array[i].dataValues;
+                dictionary[value.RealUserId] = value.userName;
+            }
+            console.log(dictionary, array)
+
+            const messages = await db.ChatRoom.findOne({ where: { roomName: newRoom }, include: [db.Message]});
+            console.log(messages)
+            const m = messages.dataValues.Messages;
+            console.log(m)
+            var liMess = [];
+            for (let c = 0; c < m.length; c++){
+                var elm = m[c].dataValues;
+                var userId = elm.UserId;
+                var name = dictionary[userId];
+                if (name === undefined){ // use the regular name
+                    const userr = await db.Users.findByPk(userId);
+                    //console.log(userr)
+                    name = userr.dataValues.Name;
+                }
+                liMess.push({ from: name, text: elm.message });
+                console.log(name)
+            }
+            console.log(liMess)
+
+            for(let b of liMess){ //                    *   
+                //console.log(b.dataValues.message);          make the dictionary here as well
+                io.to(socket.id).emit('message', { text: b.text, from: b.from, id: socket.data.user.dataValues.id});
             }
         });
 

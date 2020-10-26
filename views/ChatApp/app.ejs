@@ -9,7 +9,7 @@
     <title>ChatUp</title>
 </head>
 <%- include('../navbar'); -%>
-<body class="body">
+<body class="body" id="body">
     <div class='container'>
         <main class="main">
             <div id="cons" class="cons">
@@ -31,7 +31,7 @@
                                     <div class="_2et95 _2et95-No-ziv">
                                         <span data-testid="tail-out" data-icon="tail-out" class="_2-dPL"><svg xmlns="http://www.w3.org/2000/svg" class="friend" viewBox="0 0 8 13" width="8" height="13"><path opacity=".13" d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z"></path><path fill="currentColor" d="M5.188 0H0v11.193l6.467-8.625C7.526 1.156 6.958 0 5.188 0z"></path></svg></span>
                                         <span dir="auto" class="_3Whw5">
-                                            <b class="hi">:<%= msg.UserId %></b><br><span class="messagon"><%= msg.message %></span>
+                                            <div class="parent"><b class="hi"><%= msg.UserId %></b></div><span class="messagon"><%= msg.message %></span>
                                         </span>
                                     </div>
                                 </div>
@@ -42,6 +42,7 @@
             <div id="send" class="send _3uMse"> 
                  <input type="text" id="message-here" class="my-message-box" placeholder="your Message here"/>
             </div>
+            <input id="input" step="1" type="range" min="0" max="360" value="0">
         </main>
 
         <span class="alert" style="display: none;"><%= flash %></span>
@@ -51,11 +52,11 @@
             <button class="btn-new-room"><a href="/Chatup/NewContact">Create Contact</a></button>
 
             <ul id="room-list" class="room-list">
-                <% rooms.dataValues.ChatRooms.forEach(room => { %>
-                    <% if(room.roomName==='iceCream') { %>
-                        <li class="active room"><div class="parent"><span class="roomname"><%= room.roomName %></span> <i class='material-icons remove'>delete</i></div></li>
+                <% rooms.forEach(room => { %>
+                    <% if(room==='iceCream') { %>
+                        <li class="active room"><div class="parent"><span class="roomname"><%= room %></span> <i class='material-icons remove'>delete</i></div></li>
                     <% } else { %>
-                        <li class="room"><div class="parent"><span class="roomname"><%= room.roomName %></span> <i class='material-icons remove'>delete</i></div></li>
+                        <li class="room"><div class="parent"><span class="roomname"><%= room %></span> <i class='material-icons remove'>delete</i></div></li>
                     <% } %>
                 <% }) %>
             </ul>

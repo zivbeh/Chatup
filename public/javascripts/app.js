@@ -72,12 +72,12 @@
                 <div class="_2hqOq message-server" tabindex="-1">
                     <div class="_1E1g0">
                         <span dir="auto" class="_3Whw5">
-                            <b> ${msg.from}:</b><br> ${msg.text}
+                            <b> ${msg.from}</b><br> ${msg.text}
                         </span>
                     </div>
                 </div>
             </div>`);
-            } else if(msg.from === $user[0].textContent || msg.from === msg.id){
+            } else if(msg.from === $user[0].textContent){
             $panel.append(`<div class="poc">
             <div class="_2hqOq message-in" tabindex="-1">
                 <div class="_2et95 my">
@@ -94,7 +94,7 @@
                     <div class="_2et95 _2et95-No-ziv">
                         <span data-testid="tail-out" data-icon="tail-out" class="_2-dPL"><svg xmlns="http://www.w3.org/2000/svg" class="friend" viewBox="0 0 8 13" width="8" height="13"><path opacity=".13" d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z"></path><path fill="currentColor" d="M5.188 0H0v11.193l6.467-8.625C7.526 1.156 6.958 0 5.188 0z"></path></svg></span>
                         <span dir="auto" class="_3Whw5">
-                            <b class="hi">:${msg.from}</b><br><span class="messagon">${text}</span>
+                            <div class="parent"><b class="hi">${msg.from}</b></div><span class="messagon">${text}</span>
                         </span>
                     </div>
                 </div>

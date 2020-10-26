@@ -48,12 +48,12 @@ router.get('/', async function(req, res, next) {
         }]
     });
 
-    console.log('-----2-----', roon)
+    //console.log('-----2-----', roon)
     var diction = {};
     for (let index = 0; index < roon.length; index++) {
         const element = roon[index];
-        const id = element.dataValues.id;
-        const li = await db.ChatRoom.findOne({ where: { id: id }, 
+        const idr = element.dataValues.id;
+        const li = await db.ChatRoom.findOne({ where: { id: idr }, 
             include: [{
                 model: db.Users,
                 required: false,
@@ -62,22 +62,27 @@ router.get('/', async function(req, res, next) {
                 }
             }]
         });
-        console.log(element, li)
         var value0 = li.dataValues.Users[0].dataValues.id;
         var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
         var name;
-        if(id === value0){
+        if(user.dataValues.id === value0){
             console.log('-----1-----')
             name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
         } else {
             console.log('-----0-----')
             name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
         }
-        console.log(name, value0, value1)
-        diction[element.dataValues.roomName] = name.dataValues.userName;
+        console.log('----111111111111111111111-----' , name, '----11111111111111111-----')
+        console.log(value0, value1, element.dataValues.roomName, idr, 'Li ---------------------- i_l')
+        if (name === null){
+            name = element.dataValues.roomName;
+            diction[element.dataValues.roomName] = name;
+        } else {
+            diction[element.dataValues.roomName] = name.dataValues.userName;
+        }
     }
 
-    console.log(roon, diction, '-----dlskisdjfjsdndmbfsdbhsdjjhgjasbndamndahj-----')
+    console.log(diction, '-----dlskisdjfjsdndmbfsdbhsdjjhgjasbndamndahj-----')
 
     const roomArr = [];
     for (let index = 0; index < room.dataValues.ChatRooms.length; index++) {
@@ -88,9 +93,9 @@ router.get('/', async function(req, res, next) {
             roomArr.push(element.dataValues.roomName);
         }
     }
-    console.log(roomArr)
+    //console.log(roomArr)
 
-    console.log('-------------------------ds-------', flas) 
+    //console.log('-------------------------ds-------', flas) 
     
     if(room === []){
         return res.redirect('/Chatup/NewContact');
@@ -116,6 +121,7 @@ router.get('/', async function(req, res, next) {
         }
         liMess.push({ UserId: name, message: elm.message, id: userId });
     }
+    //console.log(liMess)
 
     res.render('ChatApp/app', { rooms: roomArr, activeRoom: liMess, user: user, flash: flas  });//fix here the flash
     flas = null;
@@ -148,10 +154,11 @@ router.post('/newcontact', async function(req, res, next) {
             UserId: user.dataValues.id, userName: req.body.ContactName, RealUserId: checkEmail.dataValues.id
         });
     }
+    console.log('-------------------------------=====-----------------------------')
 
     // if only 1 user was written get the contact name to be the roomName
 
-    res.redirect('/Chatup');
+    //res.redirect('/Chatup');
 });
 
 router.post('/newroom', async function(req, res, next) {
@@ -182,9 +189,10 @@ router.get('/Delete', async function(req, res, next) {
     // const room = await db.ChatRoom.findOne({ where: { id: 6 } });
     // console.log(room)
     //await db.Contacts.destroy({ where: { id: 2 }})
-    await db.Contacts.destroy({ where: { id: 3 }})
-    await db.Contacts.destroy({ where: { id: 4 }})
-    await db.Contacts.destroy({ where: { id: 5 }})
+    await db.ChatRoom.destroy({ where: { id: 6 }})
+    //await db.ChatRoom.destroy({ where: { id: 10 }})
+    await db.User_Rooms.destroy({ where: { id: 3 }})
+    await db.User_Rooms.destroy({ where: { id: 4 }})
     //await room.destroy();
     //await users.destroy();
     res.send('all messages deleted!');

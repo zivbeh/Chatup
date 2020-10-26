@@ -32,7 +32,6 @@ function init(server) {
         }, db.Message]});
 
         var diction = {};
-
         session(req, res,  async () => {
             if (req.session && req.session.passport && req.session.passport.user) {
                 console.log(lobby,'-----------dfdf---------------------------fdfd------');
@@ -43,8 +42,7 @@ function init(server) {
                 socket.data = { user: user, activeRoom: lobby };
                 io.to(socket.data.activeRoom[0].dataValues.roomName).emit('message', { from: 'Server', text: `User Joined: ${user.Name}`});
                 
-                const id = socket.data.user.dataValues.id;
-                const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': id },
+                const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': socket.data.user.dataValues.id },
                     include: [{
                         model: db.Users,
                         required: false,
@@ -54,11 +52,10 @@ function init(server) {
                     }]
                 });
 
-                console.log('-----2-----', roon)
                 for (let index = 0; index < roon.length; index++) {
                     const element = roon[index];
-                    const id = element.dataValues.id;
-                    const li = await db.ChatRoom.findOne({ where: { id: id }, 
+                    const i = element.dataValues.id;
+                    const li = await db.ChatRoom.findOne({ where: { id: i }, 
                         include: [{
                             model: db.Users,
                             required: false,
@@ -67,23 +64,24 @@ function init(server) {
                             }
                         }]
                     });
-                    console.log(element, li)
                     var value0 = li.dataValues.Users[0].dataValues.id;
                     var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
                     var name;
-                    if(id === value0){
+                    if(socket.data.user.dataValues.id === value0){
                         console.log('-----1-----')
                         name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
                     } else {
                         console.log('-----0-----')
                         name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
                     }
-                    console.log(name, value0, value1)
-                    diction[element.dataValues.roomName] = name.dataValues.userName;
+                    if (name === null){
+                        name = element.dataValues.roomName;
+                        diction[element.dataValues.roomName] = name;
+                    } else {
+                        diction[element.dataValues.roomName] = name.dataValues.userName;
+                    }
                 }
 
-                console.log(roon, diction, '-----dlskisdjfjsdndmbfsdbhsdjjhgjasbndamndahj-----')
-                console.log('hello evrybody!--da!!-ccccccccccc')
             } else {
                 socket.data = { user: 'Unknown', activeRoom: lobby };
                 socket.disconnect();
@@ -104,8 +102,42 @@ function init(server) {
             if(room===[]){
                 console.log('problem');
             } else {
+                
+                const Contacts = await db.User_Rooms.findAll({where:{ ChatRoomId: room[0].dataValues.id }});
+                if(Contacts.length === 2){
+                    const element = room[0];
+                    const id = element.dataValues.id;
+                    const li = await db.ChatRoom.findOne({ where: { id: id }, 
+                        include: [{
+                            model: db.Users,
+                            required: false,
+                            through: {
+                                model: db.User_Rooms,
+                            }
+                        }]
+                    });
+                    console.log(element, li)
+                    var value0 = li.dataValues.Users[0].dataValues.id;
+                    var value1 = li.dataValues.Users[1].dataValues.id;
+                    var name;
+                    if(socket.data.user.dataValues.id === value0){
+                        console.log('-----1-----')
+                        name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
+                    } else {
+                        console.log('-----0-----')
+                        name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
+                    }
+                    console.log(name, value0, value1)
+                    if (name === null){
+                        name = element.dataValues.roomName;
+                        diction[element.dataValues.roomName] = name;
+                    } else {
+                        diction[element.dataValues.roomName] = name.dataValues.userName;
+                    }
+                }
+
                 console.log(room,'--------------gd-g-fg-f-g-f-------------123435----------------')
-                io.emit('createRoom', flas);
+                io.emit('createRoom', name);
                 socket.leave(socket.data.activeRoom[0].dataValues.roomName);
                 socket.data.activeRoom = room;
                 socket.join(room[0].dataValues.roomName);
@@ -129,11 +161,17 @@ function init(server) {
             }
             console.log(a, '-----------------------')
             const room = await db.ChatRoom.findOne({ where: { roomName: a } });
-            console.log(room)
-            await db.User_Rooms.destroy({ where: { ChatRoomId: room.dataValues.id }})
-            await room.destroy();
+            console.log(room);
+            await db.User_Rooms.destroy({ where: { ChatRoomId: room.dataValues.id, UserId: socket.data.user.dataValues.id }});
+            const con = await db.User_Rooms.findAll({ where: { ChatRoomId: room.dataValues.id }});
+            console.log(con)
             
-            io.emit('deleteRoom', roomName);
+            if(con === [] || a === Object.keys(diction).find(key => diction[key] === roomName)){
+                await room.destroy();
+                io.emit('deleteRoom', roomName);
+            } else {
+                io.to(socket.id).emit('deleteRoom', roomName);
+            }
         });
 
         socket.on('message', async function(text, id) {

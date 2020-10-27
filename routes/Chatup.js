@@ -163,11 +163,46 @@ router.post('/newcontact', async function(req, res, next) {
 
 router.post('/newroom', async function(req, res, next) {
     const user = req.user;
-    const room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
     const array = req.body.Users.split(',');
     const users = await db.Users.findAll({where: {
         Email: array
-    }});
+    }}); // check if already have a room with this contact!!!
+    var room;
+    if (array.length === 1){
+        const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': user.dataValues.id },
+            include: [{
+                model: db.Users,
+                required: false,
+                through: {
+                    model: db.User_Rooms,
+                }
+            }]
+        });
+        for (let index = 0; index < roon.length; index++) {
+            const element = roon[index];
+            const idr = element.dataValues.id;
+            const li = await db.ChatRoom.findOne({ where: { id: idr }, 
+                include: [{
+                    model: db.Users,
+                    required: false,
+                    through: {
+                        model: db.User_Rooms,
+                    }
+                }]
+            });
+            var value0 = li.dataValues.Users[0].dataValues.id;
+            var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
+            if(user.dataValues.id === value0 && users[0].dataValues.id === value1 || user.dataValues.id === value1 && users[0].dataValues.id === value0){
+                console.log('-----1-----')
+                req.flash('error', 'Already have a room with this friend');
+                return res.redirect('/Chatup/NewContact');
+            } else {
+                room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
+            }
+        }
+    } else {
+        room = await db.ChatRoom.create({roomName: req.body.roomName});
+    }
     const arr = [];
     console.log(users,'-------------------NewRoomCreated----------------------');
     for (let i = 0; i < users.length; i++) {

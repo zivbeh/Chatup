@@ -34,7 +34,7 @@ function init(server) {
         var diction = {};
         session(req, res,  async () => {
             if (req.session && req.session.passport && req.session.passport.user) {
-                console.log(lobby,'-----------dfdf---------------------------fdfd------');
+                //console.log(lobby,'-----------dfdf---------------------------fdfd------');
                 const user = await db.Users.findByPk(req.session.passport.user, function(err, user) {
                     if (err) return socket.disconnect();
                 });
@@ -91,7 +91,7 @@ function init(server) {
         socket.join('iceCream');
 
         if(flas != 'iceCream'){
-            console.log(flas)
+            console.log(flas, '-d-d-d-d-dd-d-d-d-d')
             const room = await db.ChatRoom.findAll({where:{ roomName: flas }, include: [{
                 model: db.Users,
                 required: false,
@@ -102,7 +102,7 @@ function init(server) {
             if(room===[]){
                 console.log('problem');
             } else {
-                
+                console.log(room, '-----1-1-1-1-1-1-1-1-1-----')
                 const Contacts = await db.User_Rooms.findAll({where:{ ChatRoomId: room[0].dataValues.id }});
                 console.log(Contacts.length, '-----0-0-0-0-0-0-0-0-0-0-----')
                 if(Contacts.length === 2){

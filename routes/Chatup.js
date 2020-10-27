@@ -72,8 +72,8 @@ router.get('/', async function(req, res, next) {
             console.log('-----0-----')
             name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
         }
-        console.log('----111111111111111111111-----' , name, '----11111111111111111-----')
-        console.log(value0, value1, element.dataValues.roomName, idr, 'Li ---------------------- i_l')
+        //console.log('----111111111111111111111-----' , name, '----11111111111111111-----')
+        //console.log(value0, value1, element.dataValues.roomName, idr, 'Li ---------------------- i_l')
         if (name === null){
             name = element.dataValues.roomName;
             diction[element.dataValues.roomName] = name;
@@ -82,7 +82,7 @@ router.get('/', async function(req, res, next) {
         }
     }
 
-    console.log(diction, '-----dlskisdjfjsdndmbfsdbhsdjjhgjasbndamndahj-----')
+    //console.log(diction, '-----dlskisdjfjsdndmbfsdbhsdjjhgjasbndamndahj-----')
 
     const roomArr = [];
     for (let index = 0; index < room.dataValues.ChatRooms.length; index++) {
@@ -168,7 +168,9 @@ router.post('/newroom', async function(req, res, next) {
         Email: array
     }}); // check if already have a room with this contact!!!
     var room;
+    console.log('-----Check!!!-----')
     if (array.length === 1){
+        console.log('-----Check!!!1-----')
         const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': user.dataValues.id },
             include: [{
                 model: db.Users,
@@ -178,33 +180,41 @@ router.post('/newroom', async function(req, res, next) {
                 }
             }]
         });
-        for (let index = 0; index < roon.length; index++) {
-            const element = roon[index];
-            const idr = element.dataValues.id;
-            const li = await db.ChatRoom.findOne({ where: { id: idr }, 
-                include: [{
-                    model: db.Users,
-                    required: false,
-                    through: {
-                        model: db.User_Rooms,
-                    }
-                }]
-            });
-            var value0 = li.dataValues.Users[0].dataValues.id;
-            var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
-            if(user.dataValues.id === value0 && users[0].dataValues.id === value1 || user.dataValues.id === value1 && users[0].dataValues.id === value0){
-                console.log('-----1-----')
-                req.flash('error', 'Already have a room with this friend');
-                return res.redirect('/Chatup/NewContact');
-            } else {
-                room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
+        console.log(roon.length)
+        if (roon.length != 0){
+            for (let index = 0; index < roon.length; index++) {
+                const element = roon[index];
+                const idr = element.dataValues.id;
+                const li = await db.ChatRoom.findOne({ where: { id: idr }, 
+                    include: [{
+                        model: db.Users,
+                        required: false,
+                        through: {
+                            model: db.User_Rooms,
+                        }
+                    }]
+                });
+                console.log(li.dataValues.Users, '000000000000000000000000000000000')
+                var value0 = li.dataValues.Users[0].dataValues.id;
+                var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
+                if(user.dataValues.id === value0 && users[0].dataValues.id === value1 || user.dataValues.id === value1 && users[0].dataValues.id === value0){
+                    console.log('-----1-----')
+                    req.flash('error', 'Already have a room with this friend');
+                    return res.redirect('/Chatup/NewContact');
+                } else {
+                    console.log('-----2-----')
+                    room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
+                }
             }
+        } else {
+            room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
         }
     } else {
         room = await db.ChatRoom.create({roomName: req.body.roomName});
     }
+        
     const arr = [];
-    console.log(users,'-------------------NewRoomCreated----------------------');
+    console.log('-------------------NewRoomCreated----------------------');
     for (let i = 0; i < users.length; i++) {
         const useron = users[i];
         const a = await useron.addChatRoom(room, { through: {} });

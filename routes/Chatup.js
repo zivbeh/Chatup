@@ -234,10 +234,10 @@ router.get('/Delete', async function(req, res, next) {
     // const room = await db.ChatRoom.findOne({ where: { id: 6 } });
     // console.log(room)
     //await db.Contacts.destroy({ where: { id: 2 }})
-    await db.ChatRoom.destroy({ where: { id: 6 }})
+    //await db.ChatRoom.destroy({ where: { id: 6 }})
     //await db.ChatRoom.destroy({ where: { id: 10 }})
-    await db.User_Rooms.destroy({ where: { id: 3 }})
-    await db.User_Rooms.destroy({ where: { id: 4 }})
+    //await db.User_Rooms.destroy({ where: { id: 6 }})
+    await db.User_Rooms.destroy({ where: { id: 9 }})
     //await room.destroy();
     //await users.destroy();
     res.send('all messages deleted!');

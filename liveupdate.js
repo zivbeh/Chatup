@@ -166,15 +166,16 @@ function init(server) {
             }
             console.log(a, '-----------------------')
             const room = await db.ChatRoom.findOne({ where: { roomName: a } });
-            console.log(room);
-            await db.User_Rooms.destroy({ where: { ChatRoomId: room.dataValues.id, UserId: socket.data.user.dataValues.id }});
+            console.log(room, '-0-0-0--0-123194');
             const con = await db.User_Rooms.findAll({ where: { ChatRoomId: room.dataValues.id }});
-            console.log(con)
+            console.log(con, a, '--------------------123123123')
             
-            if(con === [] || a === Object.keys(diction).find(key => diction[key] === roomName)){
+            if(con === [] || a != null){
                 await room.destroy();
+                await db.User_Rooms.destroy({ where: { ChatRoomId: room.dataValues.id }});
                 io.emit('deleteRoom', roomName);
             } else {
+                await db.User_Rooms.destroy({ where: { ChatRoomId: room.dataValues.id, UserId: socket.data.user.dataValues.id }});
                 io.to(socket.id).emit('deleteRoom', roomName);
             }
         });
@@ -214,17 +215,15 @@ function init(server) {
             console.log(diction)
             var a;
             var b;
-            if (diction.hasOwnProperty(newRoom)){
+            a = Object.keys(diction).find(key => diction[key] === newRoom);
+            if (a != null){
                 console.log('NewRoomOwn----------------------')
-                //a = diction[`${newRoom}`];
-                a = Object.keys(diction).find(key => diction[key] === newRoom);
             } else {
                 a = newRoom;
             }
-            if (diction.hasOwnProperty(oldRoom)){
+            b = Object.keys(diction).find(key => diction[key] === oldRoom);
+            if (b != null){
                 console.log('OldRoomOwn-----------------------')
-                //b = diction[`${oldRoom}`];
-                b = Object.keys(diction).find(key => diction[key] === oldRoom);
             } else {
                 b = oldRoom;
             }
@@ -248,7 +247,7 @@ function init(server) {
                 var value = array[i].dataValues;
                 dictionary[value.RealUserId] = value.userName;
             }
-            console.log(dictionary, array)
+            console.log(dictionary, array, a)
 
             const messages = await db.ChatRoom.findOne({ where: { roomName: a }, include: [db.Message]});
             console.log('-----d-d-------------d-d----------d-d---', messages)

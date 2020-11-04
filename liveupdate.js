@@ -32,17 +32,22 @@ function init(server) {
         }, db.Message]});
 
         var diction = {};
-        session(req, res,  async () => {
-            if (req.session && req.session.passport && req.session.passport.user) {
-                //console.log(lobby,'-----------dfdf---------------------------fdfd------');
-                const user = await db.Users.findByPk(req.session.passport.user, function(err, user) {
-                    if (err) return socket.disconnect();
-                });
+        async function resetDictionary(){
+            diction = {};
+            roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': socket.data.user.dataValues.id },
+                include: [{
+                    model: db.Users,
+                    required: false,
+                    through: {
+                        model: db.User_Rooms,
+                    }
+                }]
+            });
 
-                socket.data = { user: user, activeRoom: lobby };
-                io.to(socket.data.activeRoom[0].dataValues.roomName).emit('message', { from: 'Server', text: `User Joined: ${user.Name}`});
-                
-                const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': socket.data.user.dataValues.id },
+            for (let index = 0; index < roon.length; index++) {
+                const element = roon[index];
+                const i = element.dataValues.id;
+                const li = await db.ChatRoom.findOne({ where: { id: i }, 
                     include: [{
                         model: db.Users,
                         required: false,
@@ -51,37 +56,33 @@ function init(server) {
                         }
                     }]
                 });
-
-                for (let index = 0; index < roon.length; index++) {
-                    const element = roon[index];
-                    const i = element.dataValues.id;
-                    const li = await db.ChatRoom.findOne({ where: { id: i }, 
-                        include: [{
-                            model: db.Users,
-                            required: false,
-                            through: {
-                                model: db.User_Rooms,
-                            }
-                        }]
-                    });
-                    var value0 = li.dataValues.Users[0].dataValues.id;
-                    var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
-                    var name;
-                    if(socket.data.user.dataValues.id === value0){
-                        console.log('-----1-----')
-                        name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
-                    } else {
-                        console.log('-----0-----')
-                        name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
-                    }
-                    if (name === null){
-                        name = element.dataValues.roomName;
-                        diction[element.dataValues.roomName] = name;
-                    } else {
-                        diction[element.dataValues.roomName] = name.dataValues.userName;
-                    }
+                var value0 = li.dataValues.Users[0].dataValues.id;
+                var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
+                var name;
+                if(socket.data.user.dataValues.id === value0){
+                    name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
+                } else {
+                    name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
                 }
+                if (name === null){
+                    // name = element.dataValues.roomName;
+                    // diction[element.dataValues.roomName] = name;
+                } else {
+                    diction[element.dataValues.roomName] = name.dataValues.userName;
+                }
+            }
+        }
 
+        session(req, res,  async () => {
+            if (req.session && req.session.passport && req.session.passport.user) {
+                const user = await db.Users.findByPk(req.session.passport.user, function(err, user) {
+                    if (err) return socket.disconnect();
+                });
+
+                socket.data = { user: user, activeRoom: lobby };
+                io.to(socket.data.activeRoom[0].dataValues.roomName).emit('message', { from: 'Server', text: `User Joined: ${user.Name}`});
+                
+                resetDictionary();
             } else {
                 socket.data = { user: 'Unknown', activeRoom: lobby };
                 socket.disconnect();
@@ -91,7 +92,6 @@ function init(server) {
         socket.join('iceCream');
 
         if(flas != 'iceCream'){
-            console.log(flas, '-d-d-d-d-dd-d-d-d-d')
             const room = await db.ChatRoom.findAll({where:{ roomName: flas }, include: [{
                 model: db.Users,
                 required: false,
@@ -102,9 +102,7 @@ function init(server) {
             if(room===[]){
                 console.log('problem');
             } else {
-                console.log(room, '-----1-1-1-1-1-1-1-1-1-----')
                 const Contacts = await db.User_Rooms.findAll({where:{ ChatRoomId: room[0].dataValues.id }});
-                console.log(Contacts.length, '-----0-0-0-0-0-0-0-0-0-0-----')
                 if(Contacts.length === 2){
                     const element = room[0];
                     const id = element.dataValues.id;
@@ -117,32 +115,51 @@ function init(server) {
                             }
                         }]
                     });
-                    console.log(element, li)
+
                     var value0 = li.dataValues.Users[0].dataValues.id;
                     var value1 = li.dataValues.Users[1].dataValues.id;
                     var name;
-                    if(socket.data.user.dataValues.id === value0){
-                        console.log('-----1-----')
-                        name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
-                    } else {
-                        console.log('-----0-----')
-                        name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
+                    var connectedClients = Object.keys(io.clients().connected);
+                    const dict = {};
+                    for (var key in connectedClients) {
+                        const d = connectedClients[key];
+                        const us = io.sockets.connected[d];
+                        const idr = us.data.user.dataValues.id;
+                        dict[d] = idr;
                     }
-                    console.log(name, value0, value1)
-                    if (name === null){
-                        name = element.dataValues.roomName;
-                        diction[element.dataValues.roomName] = name;
-                        io.emit('createRoom', name);
+                    var OtherUser;
+                    if(socket.data.user.dataValues.id === value0){
+                        OtherUser = Object.keys(dict).find(key => dict[key] === value1);
                     } else {
-                        diction[element.dataValues.roomName] = name.dataValues.userName;
-                        io.emit('createRoom', name.dataValues.userName);
+                        OtherUser = Object.keys(dict).find(key => dict[key] === value0);
+                    }
+                    if(OtherUser != undefined){
+                        //check how he call your user by id
+                        var name1 = await db.Contacts.findOne({ where: { RealUserId: socket.data.user.dataValues.id, UserId: dict[OtherUser] } });
+                        var name2 = await db.Contacts.findOne({ where: { RealUserId: dict[OtherUser], UserId: socket.data.user.dataValues.id } });
+                        if (name1 === null){
+                            name = element.dataValues.roomName;
+                            //diction[element.dataValues.roomName] = name;
+                            io.to(socketid).emit('createRoom', name);
+                        } else {
+                            //diction[element.dataValues.roomName] = name.dataValues.userName;
+                            io.to(OtherUser).emit('createRoom', name1.dataValues.userName);
+                        }
+                        if (name2 === null){
+                            name = element.dataValues.roomName;
+                            //diction[element.dataValues.roomName] = name;
+                            io.to(socketid).emit('createRoom', name);
+                        } else {
+                            //diction[element.dataValues.roomName] = name.dataValues.userName;
+                            io.to(socket.id).emit('createRoom', name2.dataValues.userName);
+                        }
+                    } else {
+                        io.emit('createRoom', flas);
                     }
                 } else {
                     io.emit('createRoom', flas);
                 }
 
-                console.log(diction, room,'--------------gd-g-fg-f-g-f-------------123435----------------')
-                console.log(name)
                 socket.leave(socket.data.activeRoom[0].dataValues.roomName);
                 socket.data.activeRoom = room;
                 socket.join(room[0].dataValues.roomName);
@@ -154,21 +171,16 @@ function init(server) {
         
 
         socket.on('deleteRoom', async function(roomName) {
-            console.log(roomName,'---------------------sd');
             console.log(diction)
             var a;
             a = Object.keys(diction).find(key => diction[key] === roomName);
-            console.log(a, '-----------------------')
             if (a != null){
                 console.log('NewRoomOwn----------------------')
             } else {
                 a = roomName;
             }
-            console.log(a, '-----------------------')
             const room = await db.ChatRoom.findOne({ where: { roomName: a } });
-            console.log(room, '-0-0-0--0-123194');
             const con = await db.User_Rooms.findAll({ where: { ChatRoomId: room.dataValues.id }});
-            console.log(con, a, '--------------------123123123')
             
             if(con === [] || a != null){
                 await room.destroy();
@@ -181,13 +193,28 @@ function init(server) {
         });
 
         socket.on('message', async function(text, id) {
-            console.log('new message: ', text, id);
             const from = socket.data.user;
-            const room = socket.data.activeRoom[0];
+            const room = socket.data.activeRoom[0];// use this users and sent to each of them diffrent message
             const x = from.dataValues.Name;
-            console.log(room.dataValues, '----------------------', x, id)
-
-            io.to(room.dataValues.roomName).emit('message', { text: text, from: x, id: id });
+            const users = io.sockets.adapter.rooms[socket.data.activeRoom[0].dataValues.roomName];
+            const arr = [];
+            for (var key in users.sockets) {
+                if (users.sockets.hasOwnProperty(key)) {
+                    arr.push(key);
+                }
+            }
+            for (var b in arr){
+                const socketid = arr[b];
+                const us = io.sockets.connected[socketid];
+                //see how this user call the message user and then emit to his socket id the message
+                const n = await db.Contacts.findOne({where: { RealUserId: from.dataValues.id, UserId: us.data.user.dataValues.id } });
+                if (n!=null){
+                    const frm = n.dataValues.userName;
+                    io.to(socketid).emit('message', { text: text, from: frm, id: id });
+                } else {
+                    io.to(socketid).emit('message', { text: text, from: x, id: id });
+                }
+            }
 
             const a = await db.Message.create({
                 message: text, UserId: from.dataValues.id, ChatRoomId: room.dataValues.id 
@@ -213,6 +240,8 @@ function init(server) {
 
         socket.on('changeRoom', async function({ oldRoom, newRoom }) {
             console.log(diction)
+            // restart the diction!
+            resetDictionary();
             var a;
             var b;
             a = Object.keys(diction).find(key => diction[key] === newRoom);
@@ -247,17 +276,13 @@ function init(server) {
                 var value = array[i].dataValues;
                 dictionary[value.RealUserId] = value.userName;
             }
-            console.log(dictionary, array, a)
 
             const messages = await db.ChatRoom.findOne({ where: { roomName: a }, include: [db.Message]});
-            console.log('-----d-d-------------d-d----------d-d---', messages)
 
             if (messages === null){
                 io.to(socket.id).emit('message', { from: 'Server', text: `No messages Yet`});
             } else {
-                console.log(messages)
                 const m = messages.dataValues.Messages;
-                console.log(m)
                 var liMess = [];
                 for (let c = 0; c < m.length; c++){
                     var elm = m[c].dataValues;
@@ -265,14 +290,12 @@ function init(server) {
                     var name = dictionary[userId];
                     if (name === undefined){ // use the regular name
                         const userr = await db.Users.findByPk(userId);
-                        //console.log(userr)
                         name = userr.dataValues.Name;
                     }
                     liMess.push({ from: name, text: elm.message });
                     console.log(name)
                 }
                 for(let b of liMess){ //                    *   
-                    //console.log(b.dataValues.message);          make the dictionary here as well
                     io.to(socket.id).emit('message', { text: b.text, from: b.from, id: socket.data.user.dataValues.id});
                 }
             }

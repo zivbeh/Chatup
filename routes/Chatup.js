@@ -15,7 +15,6 @@ router.get('/', async function(req, res, next) {
     var room;
     var id = user.dataValues.id;
     if(flas!=null){
-        console.log('a')
         liveUpdate1(flas);
         room = await db.Users.findOne({ where: { id: id, '$ChatRooms.roomName$': { [Op.ne]: flas } },  // use Op [Op.ne]: flas
         include: [{
@@ -48,7 +47,6 @@ router.get('/', async function(req, res, next) {
         }]
     });
 
-    //console.log('-----2-----', roon)
     var diction = {};
     for (let index = 0; index < roon.length; index++) {
         const element = roon[index];
@@ -72,8 +70,6 @@ router.get('/', async function(req, res, next) {
             console.log('-----0-----')
             name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
         }
-        //console.log('----111111111111111111111-----' , name, '----11111111111111111-----')
-        //console.log(value0, value1, element.dataValues.roomName, idr, 'Li ---------------------- i_l')
         if (name === null){
             name = element.dataValues.roomName;
             diction[element.dataValues.roomName] = name;
@@ -82,7 +78,6 @@ router.get('/', async function(req, res, next) {
         }
     }
 
-    //console.log(diction, '-----dlskisdjfjsdndmbfsdbhsdjjhgjasbndamndahj-----')
 
     const roomArr = [];
     for (let index = 0; index < room.dataValues.ChatRooms.length; index++) {
@@ -93,10 +88,7 @@ router.get('/', async function(req, res, next) {
             roomArr.push(element.dataValues.roomName);
         }
     }
-    //console.log(roomArr)
 
-    //console.log('-------------------------ds-------', flas) 
-    
     if(room === []){
         return res.redirect('/Chatup/NewContact');
     }
@@ -121,7 +113,6 @@ router.get('/', async function(req, res, next) {
         }
         liMess.push({ UserId: name, message: elm.message, id: userId });
     }
-    //console.log(liMess)
 
     res.render('ChatApp/app', { rooms: roomArr, activeRoom: liMess, user: user, flash: flas  });//fix here the flash
     flas = null;
@@ -169,6 +160,11 @@ router.post('/newroom', async function(req, res, next) {
     }}); // check if already have a room with this contact!!!
     var room;
     console.log('-----Check!!!-----')
+    const TF = array.find(element => element === user.dataValues.Email);
+    if(TF){
+        req.flash('error', "you can't write your email in field");
+        return res.redirect('/Chatup/NewRoom');
+    }
     if (array.length === 1){
         console.log('-----Check!!!1-----')
         const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': user.dataValues.id },
@@ -235,9 +231,9 @@ router.get('/Delete', async function(req, res, next) {
     // console.log(room)
     //await db.Contacts.destroy({ where: { id: 2 }})
     //await db.ChatRoom.destroy({ where: { id: 6 }})
-    //await db.ChatRoom.destroy({ where: { id: 10 }})
-    //await db.User_Rooms.destroy({ where: { id: 6 }})
-    await db.User_Rooms.destroy({ where: { id: 9 }})
+    await db.ChatRoom.destroy({ where: { id: 12 }})
+    //await db.User_Rooms.destroy({ where: { id: 79 }})
+    //await db.User_Rooms.destroy({ where: { id: 80 }})
     //await room.destroy();
     //await users.destroy();
     res.send('all messages deleted!');

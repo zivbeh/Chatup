@@ -111,15 +111,17 @@
     }
 
     $roomList.on('click', '.room', function (ev) {
-        console.log(ev.target)
+        console.log('------------------', ev.target)
         var newRoomName = ev.target.textContent;
         if (newRoomName === 'delete'){
             newRoomName = ev.target.parentNode.textContent;
+            console.log('--------poc----------')
             return;
         }
         var newRoomName = newRoomName.replace(' delete','');
+        console.log('------------------', newRoomName)
         if (currentRoom === newRoomName) return;
-
+        console.log('-----------nodd-------', $(ev.target).attr('class'))
         server.changeRoom(currentRoom, newRoomName);
 
         var height = $('main').height();
@@ -129,7 +131,11 @@
         
 
         $('.room.active').removeClass('active');
-        $(ev.target).addClass('active');
+        if($(ev.target).attr('class') === 'parent'){
+            $(ev.target.parentNode).addClass('active');
+        } else if($(ev.target).attr('class') === 'roomname') {
+            $(ev.target.parentNode.parentNode).addClass('active');
+        }
         $panel.html('');
         currentRoom = newRoomName;
     });

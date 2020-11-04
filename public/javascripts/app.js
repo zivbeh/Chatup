@@ -21,7 +21,7 @@
     var str;
 
     function messageon(msg){
-        if(typeof msg.id === Number){
+        //if(typeof msg.id === Number){
             var height = $(window).height();
             if(height == 568){
                 $('.messagon').each(function () {
@@ -35,13 +35,13 @@
                     htmlfoo = str.match(/.{1,46}/g).join("<br/>");
                 });
             }
-        }
+        //}
 
-        if (typeof msg.id === Number){
+        //if (typeof msg.id === Number){
             text = htmlfoo;
-        } else {
-            text = msg.text;
-        }
+        // } else {
+        //     text = msg.text;
+        // }
         return text;
     }
 
@@ -66,6 +66,7 @@
 
         newMessage(msg) {
             const text = messageon(msg);
+            console.log(msg)
 
             if(msg.from === 'Server') {
                 $panel.append(`<div class="poc">
@@ -101,6 +102,7 @@
             </div>`);
             }
 
+            
             const d = document.getElementById('cons');
             d.scrollTo(0,d.scrollHeight);
         },

@@ -222,21 +222,21 @@ function init(server) {
             room.dataValues.Messages.push(a);
         });
 
-        socket.on('createRoom', async function(roomNa) {
-            const room = await db.ChatRoom.findAll({where:{ roomName: roomNa }, include: [{
-                model: db.Users,
-                required: false,
-                through: {
-                  model: db.User_Rooms,
-                }
-              }, db.Message]});
-            socket.leave(socket.data.activeRoom[0].dataValues.roomName);
-            socket.data.activeRoom = room;
-            socket.join(room[0].dataValues.roomName);
-            io.emit('createRoom', room[0].dataValues.roomName);
-            io.to().emit('message', { text: `Room: ${room[0].dataValues.roomName} has been created`, from: 'Server'});
-            io.to(room[0].dataValues.roomName).emit('message', { text: `${socket.data.user.dataValues.Name} has joined to: ${room[0].dataValues.roomName} by ${socket.data.user.dataValues.Name}`, from: 'Server'});
-        });
+        // socket.on('createRoom', async function(roomNa) {
+        //     const room = await db.ChatRoom.findAll({where:{ roomName: roomNa }, include: [{
+        //         model: db.Users,
+        //         required: false,
+        //         through: {
+        //           model: db.User_Rooms,
+        //         }
+        //       }, db.Message]});
+        //     socket.leave(socket.data.activeRoom[0].dataValues.roomName);
+        //     socket.data.activeRoom = room;
+        //     socket.join(room[0].dataValues.roomName);
+        //     io.emit('createRoom', room[0].dataValues.roomName);
+        //     io.to().emit('message', { text: `Room: ${room[0].dataValues.roomName} has been created`, from: 'Server'});
+        //     io.to(room[0].dataValues.roomName).emit('message', { text: `${socket.data.user.dataValues.Name} has joined to: ${room[0].dataValues.roomName} by ${socket.data.user.dataValues.Name}`, from: 'Server'});
+        // });
 
         socket.on('changeRoom', async function({ oldRoom, newRoom }) {
             console.log(diction)
@@ -265,7 +265,7 @@ function init(server) {
                   model: db.User_Rooms,
                 }//                                                                          __
               }, db.Message]});//                                                           /  \
-            socket.leave(b); // you need to make every user belongs to iceCream room !Done!
+            socket.leave(b); // you need to make every user belongs to iceCream room       !Done!
             //console.log(room)//                                                          \____/
             socket.data.activeRoom = room;    ////it is adding to every body |
             socket.join(a); //                      fix here          \|/ it send it to every body instead of only the current user

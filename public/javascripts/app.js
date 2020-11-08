@@ -21,6 +21,8 @@
     var str;
 
     function messageon(msg){
+        str = '';
+        htmlfoo = '';
         //if(typeof msg.id === Number){
             var height = $(window).height();
             if(height == 568){
@@ -37,11 +39,12 @@
             }
         //}
 
-        //if (typeof msg.id === Number){
+        if (htmlfoo === ''){
+            text = msg.text;
+        } else {
             text = htmlfoo;
-        // } else {
-        //     text = msg.text;
-        // }
+        }
+        console.log(htmlfoo,'ddddd-ddddd')
         return text;
     }
 
@@ -56,6 +59,7 @@
             console.log(roomName, '-gfd-g-df-----gdf---readdy')
             
             const a = $(`li:contains(${roomName})`);
+            console.log(a)
             if($(`li:contains(${roomName})`)) {
                 console.log('found', a.parent()[0], a[0])
                 a.parent()[0].removeChild(a[0]); 
@@ -67,6 +71,7 @@
         newMessage(msg) {
             const text = messageon(msg);
             console.log(msg)
+            console.log(text,'ffffffffffff')
 
             if(msg.from === 'Server') {
                 $panel.append(`<div class="poc">

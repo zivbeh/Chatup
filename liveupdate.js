@@ -43,10 +43,12 @@ function init(server) {
                     }
                 }]
             });
+            console.log(roon, '-----------------------------------12345678878')
 
             for (let index = 0; index < roon.length; index++) {
                 const element = roon[index];
                 const i = element.dataValues.id;
+                console.log(i)
                 const li = await db.ChatRoom.findOne({ where: { id: i }, 
                     include: [{
                         model: db.Users,
@@ -65,12 +67,16 @@ function init(server) {
                     name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
                 }
                 if (name === null){
-                    // name = element.dataValues.roomName;
-                    // diction[element.dataValues.roomName] = name;
+                    name = element.dataValues.roomName;
+                    diction[element.dataValues.roomName] = name;
+                    console.log(name, '-----------------------------------123')
                 } else {
                     diction[element.dataValues.roomName] = name.dataValues.userName;
+                    console.log(name.dataValues.userName, '-----------------------------------123')
                 }
             }
+            console.log(diction)
+            return diction;
         }
 
         session(req, res,  async () => {
@@ -82,7 +88,7 @@ function init(server) {
                 socket.data = { user: user, activeRoom: lobby };
                 io.to(socket.data.activeRoom[0].dataValues.roomName).emit('message', { from: 'Server', text: `User Joined: ${user.Name}`});
                 
-                resetDictionary();
+                const diction = await resetDictionary();
             } else {
                 socket.data = { user: 'Unknown', activeRoom: lobby };
                 socket.disconnect();
@@ -170,7 +176,7 @@ function init(server) {
         }
         
 
-        socket.on('deleteRoom', async function(roomName) {
+        socket.on('deleteRoom', async function(roomName) { // work here if there is 2 users emit twise with diffrent names  
             console.log(diction)
             var a;
             a = Object.keys(diction).find(key => diction[key] === roomName);
@@ -196,6 +202,7 @@ function init(server) {
             const from = socket.data.user;
             const room = socket.data.activeRoom[0];// use this users and sent to each of them diffrent message
             const x = from.dataValues.Name;
+            console.log(socket.data.activeRoom[0].dataValues.roomName)
             const users = io.sockets.adapter.rooms[socket.data.activeRoom[0].dataValues.roomName];
             const arr = [];
             for (var key in users.sockets) {
@@ -222,36 +229,23 @@ function init(server) {
             room.dataValues.Messages.push(a);
         });
 
-        // socket.on('createRoom', async function(roomNa) {
-        //     const room = await db.ChatRoom.findAll({where:{ roomName: roomNa }, include: [{
-        //         model: db.Users,
-        //         required: false,
-        //         through: {
-        //           model: db.User_Rooms,
-        //         }
-        //       }, db.Message]});
-        //     socket.leave(socket.data.activeRoom[0].dataValues.roomName);
-        //     socket.data.activeRoom = room;
-        //     socket.join(room[0].dataValues.roomName);
-        //     io.emit('createRoom', room[0].dataValues.roomName);
-        //     io.to().emit('message', { text: `Room: ${room[0].dataValues.roomName} has been created`, from: 'Server'});
-        //     io.to(room[0].dataValues.roomName).emit('message', { text: `${socket.data.user.dataValues.Name} has joined to: ${room[0].dataValues.roomName} by ${socket.data.user.dataValues.Name}`, from: 'Server'});
-        // });
-
         socket.on('changeRoom', async function({ oldRoom, newRoom }) {
             console.log(diction)
             // restart the diction!
-            resetDictionary();
+            const dici =  await resetDictionary();
+            console.log(dici, '-----------------------------------', newRoom, oldRoom)
             var a;
             var b;
-            a = Object.keys(diction).find(key => diction[key] === newRoom);
-            if (a != null){
+            a = Object.keys(dici).find(key => dici[key] === newRoom);
+            console.log(a, '-----------------------')
+            if (a != undefined){
                 console.log('NewRoomOwn----------------------')
             } else {
                 a = newRoom;
             }
-            b = Object.keys(diction).find(key => diction[key] === oldRoom);
-            if (b != null){
+            b = Object.keys(dici).find(key => dici[key] === oldRoom);
+            console.log(b, '-----------------------')
+            if (b != undefined){
                 console.log('OldRoomOwn-----------------------')
             } else {
                 b = oldRoom;
@@ -276,9 +270,9 @@ function init(server) {
                 var value = array[i].dataValues;
                 dictionary[value.RealUserId] = value.userName;
             }
-
+            console.log(dictionary)
             const messages = await db.ChatRoom.findOne({ where: { roomName: a }, include: [db.Message]});
-
+            console.log(messages)
             if (messages === null){
                 io.to(socket.id).emit('message', { from: 'Server', text: `No messages Yet`});
             } else {
@@ -296,6 +290,7 @@ function init(server) {
                     console.log(name)
                 }
                 for(let b of liMess){ //                    *   
+                    console.log(b)
                     io.to(socket.id).emit('message', { text: b.text, from: b.from, id: socket.data.user.dataValues.id});
                 }
             }

@@ -53,13 +53,15 @@
             <button class="btn-new-room"><a href="/Chatup/NewContact">Create Contact</a></button>
 
             <ul id="room-list" class="room-list">
-                <% rooms.forEach(room => { %>
-                    <% if(room==='iceCream') { %>
-                        <li class="active room"><div class="parent"><span class="roomname"><%= room %></span> <i class='material-icons remove'>delete</i></div></li>
+                <% for (let i = 0; i < rooms.length; i++) { %>
+                    <% const element = rooms[i]; %>
+                    <% if(element==='iceCream') { %>
+                        <li id="<%= i %>" class="active room"><div class="parent"><span class="roomname"><%= element %></span> <i class='material-icons remove'>delete</i></div></li>
                     <% } else { %>
-                        <li class="room"><div class="parent"><span class="roomname"><%= room %></span> <i class='material-icons remove'>delete</i></div></li>
+                        <li id="<%= i %>" class="room"><div class="parent"><span class="roomname"><%= element %></span> <i class='material-icons remove'>delete</i></div></li>
                     <% } %>
-                <% }) %>
+                <% } %>
+
             </ul>
         </div>
     </div>

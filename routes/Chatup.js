@@ -231,9 +231,10 @@ router.get('/Delete', async function(req, res, next) {
     // console.log(room)
     //await db.Contacts.destroy({ where: { id: 2 }})
     //await db.ChatRoom.destroy({ where: { id: 6 }})
-    await db.ChatRoom.destroy({ where: { id: 12 }})
-    //await db.User_Rooms.destroy({ where: { id: 79 }})
-    //await db.User_Rooms.destroy({ where: { id: 80 }})
+    //await db.ChatRoom.destroy({ where: { id: 47 }})
+    await db.User_Rooms.destroy({ where: { id: 85 }})
+    await db.User_Rooms.destroy({ where: { id: 86 }})
+    await db.User_Rooms.destroy({ where: { id: 87 }})
     //await room.destroy();
     //await users.destroy();
     res.send('all messages deleted!');

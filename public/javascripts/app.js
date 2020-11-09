@@ -1,6 +1,6 @@
 (async function () {
     let server = {
-        changeRoom(oldRoom, newRoom) { },
+        changeRoom(oldRoom, newRoom, li) { },
         sendMessage(text) { },
         createRoom(roomName) { },
         deleteRoom(roomName) { },
@@ -51,21 +51,15 @@
     
     window.App = {
         createRoom(roomName) {
-            console.log(roomName)
-            $roomList.append(`<li class="room"><div class="parent"><span class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
+            console.log($roomList.length)
+            $roomList.append(`<li id="${$roomList.length+1}" class="room"><div class="parent"><span class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
         },
 
         deleteRoom(roomName) {
             console.log(roomName, '-gfd-g-df-----gdf---readdy')
             
-            const a = $(`li:contains(${roomName})`);
-            console.log(a)
-            if($(`li:contains(${roomName})`)) {
-                console.log('found', a.parent()[0], a[0])
-                a.parent()[0].removeChild(a[0]); 
-            } else {
-                console.log('not found')
-            }
+            console.log($roomList.find(`#${roomName}`)[0])
+            $roomList.find(`#${roomName}`)[0].parentNode.removeChild($roomList.find(`#${roomName}`)[0]); 
         },
 
         newMessage(msg) {
@@ -126,10 +120,9 @@
             return;
         }
         var newRoomName = newRoomName.replace(' delete','');
-        console.log('------------------', newRoomName)
+        console.log('------------------', ev, newRoomName)
         if (currentRoom === newRoomName) return;
         console.log('-----------nodd-------', $(ev.target).attr('class'))
-        server.changeRoom(currentRoom, newRoomName);
 
         var height = $('main').height();
         console.log(height);
@@ -138,11 +131,16 @@
         
 
         $('.room.active').removeClass('active');
+        var rrr = ev.target;
         if($(ev.target).attr('class') === 'parent'){
             $(ev.target.parentNode).addClass('active');
+            rrr = ev.target.parentNode;
         } else if($(ev.target).attr('class') === 'roomname') {
             $(ev.target.parentNode.parentNode).addClass('active');
         }
+        const ide = $(this.parentNode).find(rrr).attr('id');
+        console.log(ide,'----hfghfg-h---------hfg')
+        server.changeRoom(currentRoom, newRoomName, ide);// emit the ide!
         $panel.html('');
         currentRoom = newRoomName;
     });
@@ -150,8 +148,10 @@
     $roomList.on('click', '.remove ', function (ev) {
         console.log('work!!!', ev.target.parentNode.parentNode);
         //ev.target.parentNode.parentNode.parentNode.removeChild(ev.target.parentNode.parentNode);
-        const target = ev.target.parentNode.parentNode.textContent;
-        server.deleteRoom(target.replace(' delete',''));
+        const target = ev.target.parentNode.parentNode;
+        const ider = $(this.parentNode.parentNode.parentNode).find(target).attr('id');
+        console.log(ider)
+        server.deleteRoom(ider);
     });
 
     $myMessageBox.on('keydown', function (ev) {

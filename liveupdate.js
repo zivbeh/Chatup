@@ -226,12 +226,12 @@ function init(server) {
 
             const con = await db.User_Rooms.findAll({ where: { ChatRoomId: roo.dataValues.id }});
             if(con === [] || a != null){
-                await roo.destroy();
-                await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id }});
-                io.emit('deleteRoom', dc[Name]);
+                //await roo.destroy();
+                //await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id }});
+                io.emit('deleteRoom', Name);
             } else {
-                await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id, UserId: socket.data.user.dataValues.id }});
-                io.to(socket.id).emit('deleteRoom', dc[Name]);
+                //await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id, UserId: socket.data.user.dataValues.id }});
+                io.to(socket.id).emit('deleteRoom', Name);
             }
         });
 

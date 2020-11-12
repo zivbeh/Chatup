@@ -80,9 +80,9 @@ function init(server) {
         }
 
         var ctionary = {};
-        async function resetIdLidictionary(){
+        async function resetIdLidictionary(iid){
             ctionary = {};
-            const allRoms = await db.Users.findOne({ where: { id: socket.data.user.dataValues.id },  // use Op [Op.ne]: flas
+            const allRoms = await db.Users.findOne({ where: { id: iid },  // use Op [Op.ne]: flas
             include: [{
                 model: db.ChatRoom,
                 required: false,
@@ -111,7 +111,7 @@ function init(server) {
                 io.to(socket.data.activeRoom[0].dataValues.roomName).emit('message', { from: 'Server', text: `User Joined: ${user.Name}`});
                 
                 const diction = await resetDictionary();
-                const cc = await resetIdLidictionary();
+                const cc = await resetIdLidictionary(socket.data.user.dataValues.id);
             } else {
                 socket.data = { user: 'Unknown', activeRoom: lobby };
                 socket.disconnect();
@@ -200,8 +200,8 @@ function init(server) {
         
 
         socket.on('deleteRoom', async function(Name) { // work here if there is 2 users emit twise with diffrent names  
-            const dici =  await resetDictionary();
-            const dc =  await resetIdLidictionary();
+            //const dici =  await resetDictionary();
+            const dc =  await resetIdLidictionary(socket.data.user.dataValues.id);
             var c;
             for (key in dc) {
                 console.log(key, dc[key], Name)
@@ -213,22 +213,59 @@ function init(server) {
                 }
             }
             console.log(c, Name, dc)
-            const roo = await db.ChatRoom.findByPk(c); //c is undifiend
+            const roo = await db.ChatRoom.findOne({ where: {id: c}, include: [{
+                model: db.Users,
+                required: false,
+                through: {
+                    model: db.User_Rooms,
+                }
+            }] });
             console.log(roo)
-            var a;
-            a = Object.keys(dici).find(key => dici[key] === roo.dataValues.roomName);
-            console.log(a, '-----------------------')
-            if (a != undefined){
-                console.log('NewRoomOwn----------------------')
-            } else {
-                a = roo.dataValues.id;
-            }
+            // var a;
+            // a = Object.keys(dici).find(key => dici[key] === roo.dataValues.roomName);
+            // console.log(a, '-----------------------')
+            // if (a != undefined){
+            //     console.log('NewRoomOwn----------------------')
+            // } else {
+            //     a = roo.dataValues.id;
+            // }
 
-            const con = await db.User_Rooms.findAll({ where: { ChatRoomId: roo.dataValues.id }});
-            if(con === [] || a != null){
-                //await roo.destroy();
+            if(roo.dataValues.Users.length == 2){
+
+                var value0 = roo.dataValues.Users[0].dataValues.id;
+                var value1 = roo.dataValues.Users[1].dataValues.id;
+                var connectedClients = Object.keys(io.clients().connected);
+                const dict = {};
+                for (var key in connectedClients) {
+                    const d = connectedClients[key];
+                    const us = io.sockets.connected[d];
+                    const idr = us.data.user.dataValues.id;
+                    dict[d] = idr;
+                }
+                console.log(dict)
+                var OtherUser;
+                //if(socket.data.user.dataValues.id === value0){
+                    OtherUser = Object.keys(dict).find(key => dict[key] === value1);
+                    console.log(OtherUser,'------123')
+                    var dd = await resetIdLidictionary(value1);
+                    console.log(dd,'------123')
+                    var realName = Object.keys(dd).find(key => dd[key] === value1);
+                    console.log(realName,dd[realName],'------123')
+                    io.to(OtherUser).emit('deleteRoom', dd[realName]+1);
+                //} else {
+                    OtherUser = Object.keys(dict).find(key => dict[key] === value0);
+                    console.log(OtherUser,'------1234')
+                    dd = await resetIdLidictionary(value0);
+                    console.log(dd,'------1234')
+                    realName = Object.keys(dd).find(key => dd[key] === value0);
+                    console.log(realName,dd[realName],'------1234')
+                    io.to(OtherUser).emit('deleteRoom', dd[realName]+1);
+                //}
+
                 //await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id }});
-                io.emit('deleteRoom', Name);
+
+                // await roo.destroy();
+                // io.emit('deleteRoom', Name);
             } else {
                 //await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id, UserId: socket.data.user.dataValues.id }});
                 io.to(socket.id).emit('deleteRoom', Name);
@@ -252,6 +289,7 @@ function init(server) {
                 const us = io.sockets.connected[socketid];
                 //see how this user call the message user and then emit to his socket id the message
                 const n = await db.Contacts.findOne({where: { RealUserId: from.dataValues.id, UserId: us.data.user.dataValues.id } });
+                console.log(n)
                 if (n!=null){
                     const frm = n.dataValues.userName;
                     io.to(socketid).emit('message', { text: text, from: frm, id: id });
@@ -270,7 +308,7 @@ function init(server) {
             console.log(diction)
             // restart the diction!
             const dici =  await resetDictionary();
-            const dc =  await resetIdLidictionary();
+            const dc =  await resetIdLidictionary(socket.data.user.dataValues.id);
             var c = Object.keys(dc).find(key => dc[key] === lid);
             console.log(dc, dici, '-----------------------------------', c, newRoom, oldRoom)
             var a;

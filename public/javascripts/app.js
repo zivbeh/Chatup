@@ -50,8 +50,8 @@
     
     window.App = {
         createRoom(roomName) {
-            console.log($roomList.length)
-            $roomList.append(`<li id="${$roomList.length+1}" class="room"><div class="parent"><span class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
+            console.log($roomList[0].children.length,'ddddd-ddddd')
+            $roomList.append(`<li id="${$roomList[0].children.length+1}" class="room"><div class="parent"><span class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
         },
 
         deleteRoom(roomName) {
@@ -142,6 +142,9 @@
         server.changeRoom(currentRoom, ide);// emit the ide!
         $panel.html('');
         currentRoom = newRoomName;
+
+
+        console.log($roomList[0].children.length,'ddddd-ddddd')
     });
 
     $roomList.on('click', '.remove ', function (ev) {

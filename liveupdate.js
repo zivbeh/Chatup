@@ -352,7 +352,7 @@ function init(server) {
             console.log(dictionary)
             const messages = await db.ChatRoom.findOne({ where: { roomName: a }, include: [db.Message]});
             console.log(messages)
-            if (messages === null){
+            if (messages.dataValues.Messages.length === 0){
                 io.to(socket.id).emit('message', { from: 'Server', text: `No messages Yet`});
             } else {
                 const m = messages.dataValues.Messages;

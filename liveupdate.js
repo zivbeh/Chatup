@@ -304,21 +304,31 @@ function init(server) {
             room.dataValues.Messages.push(a);
         });
 
-        socket.on('changeRoom', async function({ oldRoom, newRoom, lid }) {
+        socket.on('changeRoom', async function({ oldRoom, newRoom }) {
             console.log(diction)
             // restart the diction!
             const dici =  await resetDictionary();
             const dc =  await resetIdLidictionary(socket.data.user.dataValues.id);
-            var c = Object.keys(dc).find(key => dc[key] === lid);
-            console.log(dc, dici, '-----------------------------------', c, newRoom, oldRoom)
-            var a;
-            a = Object.keys(dici).find(key => dici[key] === c);
-            console.log(a, '-----------------------')
-            if (a != undefined){
-                console.log('NewRoomOwn----------------------')
-            } else {
-                a = newRoom;
+            var c;
+            for (key in dc) {
+                var k = dc[key];
+                console.log(k,key, newRoom)
+                if(k==newRoom){
+                    console.log('aaa')
+                    c = key;
+                    console.log('aaa')
+                }
             }
+            //var c = Object.keys(dc).find(key => dc[key] === lid);
+            console.log(dc, dici, '-----------------------------------', c, newRoom, oldRoom)
+            const room = await db.ChatRoom.findAll({ where: { id: c }, include: [{
+                model: db.Users,
+                required: false,
+                through: {
+                  model: db.User_Rooms,
+                }
+            }, db.Message] });
+            console.log(room)
             var b;
             b = Object.keys(dici).find(key => dici[key] === oldRoom);
             console.log(b, '-----------------------')
@@ -327,21 +337,13 @@ function init(server) {
             } else {
                 b = oldRoom;
             }
-            console.log(a,b, '-----------------------')
-
-            const room = await db.ChatRoom.findAll({where:{ roomName: a }, include: [{
-                model: db.Users,
-                required: false,
-                through: {
-                  model: db.User_Rooms,
-                }//                                                                          __
-              }, db.Message]});//                                                           /  \
+            console.log(b, '-----------------------')
             socket.leave(b); // you need to make every user belongs to iceCream room       !Done!
             //console.log(room)//                                                          \____/
             socket.data.activeRoom = room;    ////it is adding to every body |
-            socket.join(a); //                      fix here          \|/ it send it to every body instead of only the current user
+            socket.join(room[0].dataValues.roomName); //                      fix here          \|/ it send it to every body instead of only the current user
             var dictionary = {};
-
+            var a = room[0].dataValues.roomName;
             const array = await db.Contacts.findAll({ where: { UserId: socket.data.user.dataValues.id } });
             for (let i = 0; i < array.length; i++){
                 var value = array[i].dataValues;

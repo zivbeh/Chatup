@@ -1,6 +1,6 @@
 (async function () {
     let server = {
-        changeRoom(oldRoom, newRoom, li) { },
+        changeRoom(oldRoom, newRoom) { },
         sendMessage(text) { },
         createRoom(roomName) { },
         deleteRoom(roomName) { },
@@ -10,7 +10,6 @@
     const $myMessageBox = $('.my-message-box');
 
     const $roomList = $('.room-list');
-    var list = document.getElementById("room-list");
 
     const $user = $('.UserName').get();
     console.log($user);
@@ -140,7 +139,7 @@
         }
         const ide = $(this.parentNode).find(rrr).attr('id');
         console.log(ide,'----hfghfg-h---------hfg')
-        server.changeRoom(currentRoom, newRoomName, ide);// emit the ide!
+        server.changeRoom(currentRoom, ide);// emit the ide!
         $panel.html('');
         currentRoom = newRoomName;
     });

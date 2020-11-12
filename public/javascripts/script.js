@@ -71,8 +71,8 @@ a.addEventListener('input', function () {
   socket.on('deleteRoom', App.deleteRoom);
 
   const server = {
-      changeRoom(oldRoom, newRoom, li) {
-          socket.emit('changeRoom', { oldRoom, newRoom, li });
+      changeRoom(oldRoom, newRoom) {
+          socket.emit('changeRoom', { oldRoom, newRoom });
       },
 
       sendMessage(text, id) {

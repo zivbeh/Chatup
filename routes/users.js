@@ -21,11 +21,10 @@ router.post('/', async function(req, res, next) {
   }
 
   const userss1 = await User.findOne({ where: { Email: req.body.Email } });
+  const userss10 = await User.findOne({ where: { Name: req.body.Name } });
   console.log(userss1);
-  if(userss1){
-    //await User.destroy({ where: { Email: req.body.Email } });
-    //console.log('destroyed', req.body.Email);
-    req.flash('error', `Email:  ${req.body.Email}  already exist`);
+  if(userss1 || userss10){
+    req.flash('error', `Email or Name already exist`);
     return res.redirect('/users');
   }
 

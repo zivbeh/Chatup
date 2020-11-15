@@ -14,7 +14,7 @@
     const $user = $('.UserName').get();
     console.log($user);
 
-    let currentRoom = 'iceCream';
+    let currentRoom = 0;
 
     var htmlfoo;
     var str;
@@ -51,7 +51,7 @@
     window.App = {
         createRoom(roomName) {
             console.log($roomList[0].children.length,'ddddd-ddddd')
-            $roomList.append(`<li id="${$roomList[0].children.length+1}" class="room"><div class="parent"><span class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
+            $roomList.append(`<li id="${$roomList[0].children.length+1}" class="room"><div id="Nope" class="parent"><span id="No" class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
         },
 
         deleteRoom(roomName) {
@@ -111,16 +111,21 @@
     }
 
     $roomList.on('click', '.room', function (ev) {
-        console.log('------------------', ev.target)
+        console.log('------------------', ev.target, $(this).attr('id'))
         var newRoomName = ev.target.textContent;
         if (newRoomName === 'delete'){
             newRoomName = ev.target.parentNode.textContent;
             console.log('--------poc----------')
             return;
         }
-        var newRoomName = newRoomName.replace(' delete','');
-        console.log('------------------', ev, newRoomName)
-        if (currentRoom === newRoomName) return;
+        var Id = $(this).attr('id');
+        if(Id=='Nope'){
+            Id = $(this.parentNode).attr('id');
+        } else if(Id=='No'){
+            Id = $(this.parentNode.parentNode).attr('id');
+        }
+        console.log('------------------', ev, Id)
+        if (currentRoom === Id) return;//make it to be an Id and not and a Name
         console.log('-----------nodd-------', $(ev.target).attr('class'))
 
         var height = $('main').height();
@@ -130,30 +135,21 @@
         
 
         $('.room.active').removeClass('active');
-        var rrr = ev.target;
         if($(ev.target).attr('class') === 'parent'){
             $(ev.target.parentNode).addClass('active');
-            rrr = ev.target.parentNode;
         } else if($(ev.target).attr('class') === 'roomname') {
             $(ev.target.parentNode.parentNode).addClass('active');
         }
-        const ide = $(this.parentNode).find(rrr).attr('id');
-        console.log(ide,'----hfghfg-h---------hfg')
-        server.changeRoom(currentRoom, ide);// emit the ide!
+        server.changeRoom(currentRoom, Id);
         $panel.html('');
-        currentRoom = newRoomName;
-
-
-        console.log($roomList[0].children.length,'ddddd-ddddd')
+        currentRoom = Id;
     });
 
     $roomList.on('click', '.remove ', function (ev) {
-        console.log('work!!!', ev.target.parentNode.parentNode);
-        //ev.target.parentNode.parentNode.parentNode.removeChild(ev.target.parentNode.parentNode);
-        const target = ev.target.parentNode.parentNode;
-        const ider = $(this.parentNode.parentNode.parentNode).find(target).attr('id');
-        console.log(ider)
-        server.deleteRoom(ider);
+        console.log('work!!!', $(this.parentNode.parentNode).attr('id'));
+
+        var Id = $(this.parentNode.parentNode).attr('id');
+        server.deleteRoom(Id);
     });
 
     $myMessageBox.on('keydown', function (ev) {
@@ -161,7 +157,7 @@
             const messageText = $myMessageBox.val();
             $myMessageBox.val('');
             
-            server.sendMessage(messageText, $user[0].textContent);
+            server.sendMessage(messageText, $('.room.active').attr('id'));
         }else{
             return;
         }

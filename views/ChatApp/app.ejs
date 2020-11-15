@@ -46,8 +46,6 @@
             <input id="input" step="1" type="range" min="0" max="360" value="0">
         </main>
 
-        <span class="alert" style="display: none;"><%= flash %></span>
-
         <div class="sidebar">
             <button class="btn-new-room"><a href="/Chatup/NewRoom">Create Room</a></button>
             <button class="btn-new-room"><a href="/Chatup/NewContact">Create Contact</a></button>
@@ -56,9 +54,9 @@
                 <% for (let i = 0; i < rooms.length; i++) { %>
                     <% const element = rooms[i]; %>
                     <% if(element==='iceCream') { %>
-                        <li id="<%= i %>" class="active room"><div class="parent"><span class="roomname"><%= element %></span> <i class='material-icons remove'>delete</i></div></li>
+                        <li id="<%= i %>" class="active room"><div id="Nope" class="parent"><span id="No" class="roomname"><%= element %></span> <i class='material-icons remove'>delete</i></div></li>
                     <% } else { %>
-                        <li id="<%= i %>" class="room"><div class="parent"><span class="roomname"><%= element %></span> <i class='material-icons remove'>delete</i></div></li>
+                        <li id="<%= i %>" class="room"><div id="Nope" class="parent"><span id="No" class="roomname"><%= element %></span> <i class='material-icons remove'>delete</i></div></li>
                     <% } %>
                 <% } %>
 

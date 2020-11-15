@@ -16,7 +16,7 @@ router.get('/', async function(req, res, next) {
     var id = user.dataValues.id;
     if(flas!=null){
         liveUpdate1(flas);
-        room = await db.Users.findOne({ where: { id: id, '$ChatRooms.roomName$': { [Op.ne]: flas } },  // use Op [Op.ne]: flas
+        room = await db.Users.findOne({ where: { id: id, '$ChatRooms.id$': { [Op.ne]: flas } },  // use Op [Op.ne]: flas
         include: [{
             model: db.ChatRoom,
             required: false,
@@ -26,7 +26,7 @@ router.get('/', async function(req, res, next) {
         }]
         });
     } else {
-        room = await db.Users.findOne({ where: { id: id },  // use Op [Op.ne]: flas
+        room = await db.Users.findOne({ where: { id: id },
         include: [{
             model: db.ChatRoom,
             required: false,
@@ -63,27 +63,34 @@ router.get('/', async function(req, res, next) {
         var value0 = li.dataValues.Users[0].dataValues.id;
         var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
         var name;
+        var idn;
         if(user.dataValues.id === value0){
             console.log('-----1-----')
             name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
+            idn=value1;
         } else {
             console.log('-----0-----')
             name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
+            idn=value0;
         }
-        if (name === null){
-            name = element.dataValues.roomName;
-            diction[element.dataValues.roomName] = name;
+
+        console.log(name)
+        if (name == null){
+            const namit = await db.Users.findByPk(idn);
+            name = namit.dataValues.Name;
+            diction[element.dataValues.id] = name;
         } else {
-            diction[element.dataValues.roomName] = name.dataValues.userName;
+            diction[element.dataValues.id] = name.dataValues.userName;
         }
     }
+    console.log(diction,'dictonmsdaad')
 
 
     const roomArr = [];
     for (let index = 0; index < room.dataValues.ChatRooms.length; index++) {
         const element = room.dataValues.ChatRooms[index];
-        if(diction.hasOwnProperty(`${element.dataValues.roomName}`)){
-            roomArr.push(diction[element.dataValues.roomName]);
+        if(diction.hasOwnProperty(`${element.dataValues.id}`)){
+            roomArr.push(diction[element.dataValues.id]);
         } else {
             roomArr.push(element.dataValues.roomName);
         }
@@ -100,7 +107,7 @@ router.get('/', async function(req, res, next) {
         dictionary[value.RealUserId] = value.userName;
     }
 
-    const messages = await db.ChatRoom.findOne({ where: { roomName: 'iceCream' }, include: [db.Message]}); // change this to be more usefull
+    const messages = await db.ChatRoom.findOne({ where: { id: 1 }, include: [db.Message]}); // change this to be more usefull
     const m = messages.dataValues.Messages;
     var liMess = [];
     for (let c = 0; c < m.length; c++){
@@ -114,7 +121,7 @@ router.get('/', async function(req, res, next) {
         liMess.push({ UserId: name, message: elm.message, id: userId });
     }
 
-    res.render('ChatApp/app', { rooms: roomArr, activeRoom: liMess, user: user, flash: flas  });//fix here the flash
+    res.render('ChatApp/app', { rooms: roomArr, activeRoom: liMess, user: user  });
     flas = null;
 });
 
@@ -218,8 +225,8 @@ router.post('/newroom', async function(req, res, next) {
         console.log('work');
     }
     const a = await user.addChatRoom(room, { through: {} });
-    flas = req.body.roomName;
-    console.log(req.body.roomName,'------------------new-')
+    flas = room.dataValues.id;
+    console.log(flas,'------------------new-')
     res.redirect('/Chatup');
 });
 
@@ -227,16 +234,10 @@ router.post('/newroom', async function(req, res, next) {
 
 
 router.get('/Delete', async function(req, res, next) {
-    // const room = await db.ChatRoom.findOne({ where: { id: 6 } });
-    // console.log(room)
-    //await db.Contacts.destroy({ where: { id: 2 }})
-    //await db.ChatRoom.destroy({ where: { id: 6 }})
-    //await db.ChatRoom.destroy({ where: { id: 47 }})
-    await db.User_Rooms.destroy({ where: { id: 85 }})
-    await db.User_Rooms.destroy({ where: { id: 86 }})
-    await db.User_Rooms.destroy({ where: { id: 87 }})
-    //await room.destroy();
-    //await users.destroy();
+    for (let index = 40; index < 44; index++) {
+        await db.Message.destroy({ where: { id: index }})
+    }
+    
     res.send('all messages deleted!');
 });
 

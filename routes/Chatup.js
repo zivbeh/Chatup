@@ -166,6 +166,7 @@ router.post('/newroom', async function(req, res, next) {
         Email: array
     }}); // check if already have a room with this contact!!!
     var room;
+    console.log(users)
     console.log('-----Check!!!-----')
     const TF = array.find(element => element === user.dataValues.Email);
     if(TF){

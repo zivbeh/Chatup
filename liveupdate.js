@@ -243,13 +243,13 @@ function init(server) {
                     io.to(socket.id).emit('deleteRoom', Name);
                 }
 
-                //await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id }});
+                await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id }});
 
                 // await roo.destroy();
                 // io.emit('deleteRoom', Name);
             } else {
                 console.log('yangaaaaaaaaaaaaaaaaaaaDODODODODODODODOODOD')
-                //await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id, UserId: socket.data.user.dataValues.id }});
+                await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id, UserId: socket.data.user.dataValues.id }});
                 io.to(socket.id).emit('deleteRoom', Name);
             }
         });

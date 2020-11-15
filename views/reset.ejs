@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="shortcut icon" href="/images/Ziv-logo.png" type="image/x-icon">
-    <script src="./javascripts/script.js"></script>
   </head>
   <body>
     <%- include('./navbar'); -%>
@@ -37,14 +36,13 @@
     }
 </style>
 <script>
-  // var c = document.getElementById('alert');
-  // if (document.getElementById("alert")) {
-  //   console.log('work');
-  //   setTimeout(function(){ c.className('hide'); }, 6000);
-  // } if(c.className === 'hide' && document.getElementById("alert")) {
-  //   console.log('work');
-  //   c.className('');
-  //   setTimeout(function(){ c.style.display = 'none' }, 6000);
-  // }
+  function passwordShower() {
+      var x = document.getElementById("exampleInputPassword1");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+  }
 </script>
 </html>

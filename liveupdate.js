@@ -23,62 +23,6 @@ function init(server) {
         let res = { getHeader: () => { }, setHeader: () => { } };
         console.log(socket.id,'----------------------d---------------------------')
 
-        const lobby  = await db.ChatRoom.findAll({where:{ id: 1 }, include: [{
-            model: db.Users,
-            required: false,
-            through: {
-              model: db.User_Rooms,
-            }
-        }, db.Message]});
-
-        var diction = {};
-        // async function resetDictionary(){
-        //     diction = {};
-        //     roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': socket.data.user.dataValues.id },
-        //         include: [{
-        //             model: db.Users,
-        //             required: false,
-        //             through: {
-        //                 model: db.User_Rooms,
-        //             }
-        //         }]
-        //     });
-        //     console.log(roon, '-----------------------------------12345678878')
-
-        //     for (let index = 0; index < roon.length; index++) {
-        //         const element = roon[index];
-        //         const i = element.dataValues.id;
-        //         console.log(i)
-        //         const li = await db.ChatRoom.findOne({ where: { id: i }, 
-        //             include: [{
-        //                 model: db.Users,
-        //                 required: false,
-        //                 through: {
-        //                     model: db.User_Rooms,
-        //                 }
-        //             }]
-        //         });
-        //         var value0 = li.dataValues.Users[0].dataValues.id;
-        //         var value1 = li.dataValues.Users[1].dataValues.id; // gets only 1 fix!!!
-        //         var name;
-        //         if(socket.data.user.dataValues.id === value0){
-        //             name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
-        //         } else {
-        //             name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
-        //         }
-        //         if (name === null){
-        //             name = element.dataValues.id;
-        //             diction[element.dataValues.id] = name;
-        //             console.log(name, '-----------------------------------123')
-        //         } else {
-        //             diction[element.dataValues.id] = name.dataValues.userName;
-        //             console.log(name.dataValues.userName, '-----------------------------------123')
-        //         }
-        //     }
-        //     console.log(diction)
-        //     return diction;
-        // }
-
         var ctionary = {};
         async function resetIdLidictionary(iid){
             ctionary = {};
@@ -102,17 +46,22 @@ function init(server) {
 
         session(req, res,  async () => {
             if (req.session && req.session.passport && req.session.passport.user) {
+
+                // const lobby  = await db.ChatRoom.findAll({where:{ id: 1 }, include: [{
+                //     model: db.Users,
+                //     required: false,
+                //     through: {
+                //       model: db.User_Rooms,
+                //     }
+                // }, db.Message]});
+
                 const user = await db.Users.findByPk(req.session.passport.user, function(err, user) {
                     if (err) return socket.disconnect();
                 });
 
-                socket.data = { user: user, activeRoom: lobby };
-                io.to(socket.data.activeRoom[0].dataValues.id).emit('message', { from: 'Server', text: `User Joined: ${user.Name}`});
+                socket.data = { user: user, activeRoom: 'NoRoom' };
                 
-                //const diction = await resetDictionary();
-                const cc = await resetIdLidictionary(socket.data.user.dataValues.id);
             } else {
-                socket.data = { user: 'Unknown', activeRoom: lobby };
                 socket.disconnect();
             }
         });
@@ -191,9 +140,6 @@ function init(server) {
                 } else {
                     io.emit('createRoom', room[0].dataValues.roomName);
                 }
-
-                io.to(room[0].dataValues.id).emit('message', { text: `Room: ${room[0].dataValues.roomName} has been created`, from: 'Server'});
-                io.to(room[0].dataValues.id).emit('message', { text: `${socket.data.user.dataValues.Name} has joined to: ${room[0].dataValues.roomName} by ${socket.data.user.dataValues.Name}`, from: 'Server'});
             }
             flas = 'iceCream';
         }
@@ -261,9 +207,7 @@ function init(server) {
             var RoomId = Object.keys(dc).find(key => dc[key] == id);
 
             const from = socket.data.user;
-            const room = socket.data.activeRoom[0];
             const x = from.dataValues.Name;
-            console.log(socket.data.activeRoom[0].dataValues.id)
             const users = io.sockets.adapter.rooms[socket.data.activeRoom[0].dataValues.id];
             const arr = [];
             for (var key in users.sockets) {
@@ -294,7 +238,11 @@ function init(server) {
             const dc =  await resetIdLidictionary(socket.data.user.dataValues.id);
 
             var c = Object.keys(dc).find(key => dc[key] == newRoom);
+
             var d = Object.keys(dc).find(key => dc[key] == oldRoom);
+            if(oldRoom=='NoRoom'){
+                d='NoRoom';
+            }
             console.log(dc, d, '---------------123123--------------------', c, newRoom, oldRoom)
 
             const room = await db.ChatRoom.findAll({ where: { id: c }, include: [{

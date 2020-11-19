@@ -100,28 +100,28 @@ router.get('/', async function(req, res, next) {
         return res.redirect('/Chatup/NewContact');
     }
 
-    var dictionary = {};
-    const array = await db.Contacts.findAll({ where: { UserId: user.dataValues.id } });
-    for (let i = 0; i < array.length; i++){
-        var value = array[i].dataValues;
-        dictionary[value.RealUserId] = value.userName;
-    }
+    // var dictionary = {};
+    // const array = await db.Contacts.findAll({ where: { UserId: user.dataValues.id } });
+    // for (let i = 0; i < array.length; i++){
+    //     var value = array[i].dataValues;
+    //     dictionary[value.RealUserId] = value.userName;
+    // }
 
-    const messages = await db.ChatRoom.findOne({ where: { id: 1 }, include: [db.Message]}); // change this to be more usefull
-    const m = messages.dataValues.Messages;
-    var liMess = [];
-    for (let c = 0; c < m.length; c++){
-        var elm = m[c].dataValues;
-        var userId = elm.UserId;
-        var name = dictionary[userId];
-        if (name === undefined){ // use the regular name
-            const userr = await db.Users.findByPk(userId);
-            name = userr.dataValues.Name;
-        }
-        liMess.push({ UserId: name, message: elm.message, id: userId });
-    }
+    // const messages = await db.ChatRoom.findOne({ where: { id: 1 }, include: [db.Message]}); // change this to be more usefull
+    // const m = messages.dataValues.Messages;
+    // var liMess = [];
+    // for (let c = 0; c < m.length; c++){
+    //     var elm = m[c].dataValues;
+    //     var userId = elm.UserId;
+    //     var name = dictionary[userId];
+    //     if (name === undefined){ // use the regular name
+    //         const userr = await db.Users.findByPk(userId);
+    //         name = userr.dataValues.Name;
+    //     }
+    //     liMess.push({ UserId: name, message: elm.message, id: userId });
+    // }
 
-    res.render('ChatApp/app', { rooms: roomArr, activeRoom: liMess, user: user  });
+    res.render('ChatApp/app', { rooms: roomArr, user: user  });
     flas = null;
 });
 

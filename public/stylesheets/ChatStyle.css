@@ -109,6 +109,7 @@ background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%,
         
 border-radius: 0px 0px 21px 21px;
 top: 10px;
+border-radius: 0px 0px 20px 20px;
 }
 html[dir=rtl] {
 direction: rtl;

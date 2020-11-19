@@ -18,9 +18,15 @@ function heightsizer(){
 
 window.onload = function(){
   heightsizer();
-  
-  const d = document.getElementById('cons');
-  d.scrollTo(0,d.scrollHeight);
+
+  const y = document.getElementById('send');
+  y.style.display = "none";
+  const x = document.getElementById('cons');
+  x.style.display = "none";
+  console.log($('.messagon1231'));
+
+  // const d = document.getElementById('cons');
+  // d.scrollTo(0,d.scrollHeight);
 }
 
 var width = $(window).width();

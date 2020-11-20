@@ -28,6 +28,30 @@ window.onload = function(){
   // const d = document.getElementById('cons');
   // d.scrollTo(0,d.scrollHeight);
 }
+function size(){
+  var widt = $(window).width();
+  if(widt<=760){
+    const g = document.getElementById('gingi');
+    g.style.display = "block";
+  } else {
+    const e = document.getElementById('gingi');
+    e.style.display = "none";
+    const d = document.getElementById('sidebar');
+    d.style.width = "50%";
+    const x = document.getElementById('main');
+    x.style.display = "block";
+  }
+}
+size();
+document.getElementById("Back").addEventListener("click", function () {
+  const e = document.getElementById('gingi');
+  e.style.display = "none";
+  const x = document.getElementById('main');
+  x.style.display = "none";
+  const d = document.getElementById('sidebar');
+  d.style.display = "block";
+  d.style.width = "100%";
+}, false);
 
 var width = $(window).width();
 $(window).on('resize', function() {
@@ -36,6 +60,7 @@ $(window).on('resize', function() {
   var hie = cons1.height()-50;
   cons.style.maxHeight = hie+"px";
 
+  size();
   heightsizer();
 });
 

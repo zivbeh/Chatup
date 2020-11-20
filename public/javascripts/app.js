@@ -128,6 +128,16 @@
         if (currentRoom === Id) return;//make it to be an Id and not and a Name
         console.log('-----------nodd-------', $(ev.target).attr('class'))
 
+        var widt = $(window).width();
+        if(widt<=760){
+            const e = document.getElementById('gingi');
+            e.style.display = "block";
+            const x = document.getElementById('main');
+            x.style.display = "block";
+            const d = document.getElementById('sidebar');
+            d.style.display = "none";
+        }
+        
         var height = $('main').height();
         console.log(height);
         var cons6 = document.getElementById('cons');

@@ -13,9 +13,9 @@
 <body class="body" id="body">
     <div class='container'>
         <main id="main" lass="main">
-            <div id="gingi"><button id="Back" class="btn-new-room" style="background-color: #582058;">Back</button></div>
             <div id="cons" class="cons">
             </div>
+            <div id="gingi" style="position: absolute;"><button id="Back" class="btn-new-room" style="background-color: #582058;">Back</button></div>
             <div id="clear"><span>You are using Chatup<br>Choose or Create Room and start Chating!!!<button class="btn-new-room"><a href="/Chatup/NewRoom">Create Room</a></button></span></div>
             <div id="send" class="send _3uMse"> 
                  <input type="text" id="message-here" class="my-message-box" placeholder="your Message here"/>
@@ -32,7 +32,6 @@
                     <% const element = rooms[i]; %>
                     <li id="<%= i %>" class="room"><div id="Nope" class="parent"><span id="No" class="roomname"><%= element %></span> <i class='material-icons remove'>delete</i></div></li>
                 <% } %>
-
             </ul>
         </div>
     </div>

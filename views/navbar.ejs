@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/">ChatUp</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <button onclick="openSlideMenu()" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
@@ -27,3 +27,64 @@
     </ul>
   </div>
 </nav>
+<div id="side-menu" class="side-nav">
+  <a href="#" class="btn-close" onclick="closeSlideMenu()">&times;</a>
+  <% if(user === undefined){ %>
+      <a class="nav-link" href="/sessions">Login<span class="sr-only">(current)</span></a>
+      <a class="nav-link" href="/users">SignUp</a>
+  <% } else { %>
+        <a class="nav-link" href="/settings">Hello <span class="UserName"><u><%= user.dataValues.Name %></u></span><span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/Chatup">Chat<span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/ToDoList">ToDoList</a>
+  <% } %>
+</div>
+<script>
+  function openSlideMenu(){
+    document.getElementById('side-menu').style.width = '250px';
+    document.getElementById('main').style.marginLeft = '250px';
+  }
+
+  function closeSlideMenu(){
+    document.getElementById('side-menu').style.width = '0';
+    document.getElementById('main').style.marginLeft = '0';
+  }
+</script>
+<style>
+  .side-nav{
+  height:100%;
+  width:0;
+  position:fixed;
+  z-index:1;
+  top:0;
+  left:0;
+  background-color:#111;
+  opacity:0.9;
+  overflow-x:hidden;
+  padding-top:60px;
+  transition:0.5s;
+}
+
+.side-nav a{
+  padding:10px 10px 10px 30px;
+  text-decoration:none;
+  font-size:22px;
+  color:#ccc;
+  display:block;
+  transition:0.3s;
+}
+
+.side-nav a:hover{
+  color:#fff;
+}
+
+.side-nav .btn-close{
+  position:absolute;
+  top:0;
+  right:22px;
+  font-size:36px;
+  margin-left:50px;
+}
+@media(max-width:568px){
+  .navbar-nav{display:none}
+}
+</style>

@@ -16,8 +16,20 @@ function heightsizer(){
   roomlist.style.maxHeight = (height-65)+"px";
 }
 
+var tiles = document.querySelector('html');
+const a = document.getElementById('input');
+
+a.addEventListener('input', function () {
+  var filter = 'hue-rotate(xdeg)'.replace('x', a.value);
+  console.log(filter, a.value)
+  tiles.style.filter = filter;
+}, false);
+
 window.onload = function(){
   heightsizer();
+
+  tiles.style.filter = 'hue-rotate(150deg)';
+  a.value = 152;
 
   const y = document.getElementById('send');
   y.style.display = "none";
@@ -83,16 +95,6 @@ if(height == 568){
     $(this).html(htmlfoo);
   });
 }
-
-
-var tiles = document.querySelector('html');
-const a = document.getElementById('input');
-
-a.addEventListener('input', function () {
-  var filter = 'hue-rotate(xdeg)'.replace('x', a.value);
-  console.log(filter, a.value)
-  tiles.style.filter = filter;
-}, false);
 
 
 (function () {

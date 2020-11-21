@@ -85,7 +85,7 @@ if(height == 568){
 }
 
 
-var tiles = document.querySelector('body');
+var tiles = document.querySelector('html');
 const a = document.getElementById('input');
 
 a.addEventListener('input', function () {

@@ -267,7 +267,8 @@ color: #00B7FF;
 .sidebar {
 background: #6b5e30;
 color: #f5f5f5;
-/*overflow: hidden;*/
+background-image: url('/images/leaf.png');
+background-size: 6% 3%;
 position: relative;
 width: 50%;
 /*max-width: 240px;*/

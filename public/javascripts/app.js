@@ -12,7 +12,6 @@
     const $roomList = $('.room-list');
 
     const $user = $('.UserName').get();
-    console.log($user);
 
     let currentRoom = 'NoRoom';
 
@@ -43,28 +42,22 @@
         } else {
             text = htmlfoo;
         }
-        console.log(htmlfoo,'ddddd-ddddd')
         return text;
     }
 
     
     window.App = {
         createRoom(roomName) {
-            console.log($roomList[0].children.length,'ddddd-ddddd')
             $roomList.append(`<li id="${$roomList[0].children.length+1}" class="room"><div id="Nope" class="parent"><span id="No" class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
         },
 
         deleteRoom(roomName) {
-            console.log(roomName, '-gfd-g-df-----gdf---readdy')
             
-            console.log($roomList.find(`#${roomName}`)[0])
             $roomList.find(`#${roomName}`)[0].parentNode.removeChild($roomList.find(`#${roomName}`)[0]); 
         },
 
         newMessage(msg) {
             const text = messageon(msg);
-            console.log(msg)
-            console.log(text,'ffffffffffff')
 
             if(msg.from === 'Server') {
                 $panel.append(`<div class="poc">
@@ -111,11 +104,9 @@
     }
 
     $roomList.on('click', '.room', function (ev) {
-        console.log('------------------', ev.target, $(this).attr('id'))
         var newRoomName = ev.target.textContent;
         if (newRoomName === 'delete'){
             newRoomName = ev.target.parentNode.textContent;
-            console.log('--------poc----------')
             return;
         }
         var Id = $(this).attr('id');
@@ -124,9 +115,7 @@
         } else if(Id=='No'){
             Id = $(this.parentNode.parentNode).attr('id');
         }
-        console.log('------------------', ev, Id)
-        if (currentRoom === Id) return;//make it to be an Id and not and a Name
-        console.log('-----------nodd-------', $(ev.target).attr('class'))
+        if (currentRoom === Id) return;
 
         var widt = $(window).width();
         if(widt<=760){
@@ -139,18 +128,18 @@
         }
         
         var height = $('main').height();
-        console.log(height);
         var cons6 = document.getElementById('cons');
         cons6.style.height = height+"px";
         
+        if (currentRoom != 'NoRoom'){
+            $('.room.active').removeClass('active');
+        }
         if($(ev.target).attr('class') === 'parent'){
             $(ev.target.parentNode).addClass('active');
         } else if($(ev.target).attr('class') === 'roomname') {
             $(ev.target.parentNode.parentNode).addClass('active');
         }
-        if (currentRoom != 'NoRoom'){
-            $('.room.active').removeClass('active');
-        }
+
         document.getElementById('send').style.display = 'flex';
         document.getElementById('cons').style.display = "flex";
         server.changeRoom(currentRoom, Id);
@@ -160,7 +149,6 @@
     });
 
     $roomList.on('click', '.remove ', function (ev) {
-        console.log('work!!!', $(this.parentNode.parentNode).attr('id'));
 
         var Id = $(this.parentNode.parentNode).attr('id');
         server.deleteRoom(Id);

@@ -62,9 +62,6 @@ router.post('/', async function(req, res, next) {
   }
   console.log(user.dataValues.id);
   req.logIn(user.dataValues, async function(err) {
-    await db.User_Rooms.create({
-      UserId:wronguser.dataValues.id, ChatRoomId:1
-    });
     console.log('logIn');
     console.log('inserted');
     //req.flash('success',`New User connected:  ${req.body.Name}`);

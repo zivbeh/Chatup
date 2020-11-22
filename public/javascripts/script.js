@@ -8,7 +8,6 @@ function passwordShower() {
 }
 function heightsizer(){
   var height = $('main').height();
-  console.log(height);
   var cons6 = document.getElementById('cons');
   cons6.style.height = height+"px";
 
@@ -21,7 +20,6 @@ const a = document.getElementById('input');
 
 a.addEventListener('input', function () {
   var filter = 'hue-rotate(xdeg)'.replace('x', a.value);
-  console.log(filter, a.value)
   tiles.style.filter = filter;
 }, false);
 
@@ -35,7 +33,6 @@ window.onload = function(){
   y.style.display = "none";
   const x = document.getElementById('cons');
   x.style.display = "none";
-  console.log($('.messagon1231'));
 
   // const d = document.getElementById('cons');
   // d.scrollTo(0,d.scrollHeight);

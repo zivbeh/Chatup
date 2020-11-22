@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
 var ChatRouter = require('./routes/Chatup');
+var ToDoListRouter = require('./routes/Todolist');
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/v1.0/', apiRouter);
 app.use('/Chatup', ChatRouter);
+app.use('/ToDoList', ToDoListRouter);
 
 const sessionsRouter = require('./routes/sessions');
 app.use('/sessions', sessionsRouter);

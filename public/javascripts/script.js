@@ -39,16 +39,30 @@ window.onload = function(){
 }
 function size(){
   var widt = $(window).width();
-  if(widt<=760){
+  if(widt<=768){
     const g = document.getElementById('gingi');
     g.style.display = "block";
+    const er = document.getElementById('img');
+    er.style.width = (widt/2-35)+'px';
+    const f = document.getElementById('main');
+    f.style.display = "block";
+    const n = document.getElementById('sidebar');
+    n.style.display = "none";
   } else {
     const e = document.getElementById('gingi');
     e.style.display = "none";
     const d = document.getElementById('sidebar');
     d.style.width = "50%";
+    d.style.display = "block";
     const x = document.getElementById('main');
     x.style.display = "block";
+    const ern = document.getElementById('img');
+    if((widt/2-35)>=350){
+      ern.style.width = 300+'px';
+    } else {
+      ern.style.width = (widt/2-35)+'px';
+    }
+    
   }
 }
 size();

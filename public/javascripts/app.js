@@ -118,7 +118,7 @@
         if (currentRoom === Id) return;
 
         var widt = $(window).width();
-        if(widt<=760){
+        if(widt<=768){
             const e = document.getElementById('gingi');
             e.style.display = "block";
             const x = document.getElementById('main');

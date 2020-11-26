@@ -43,7 +43,7 @@ function size(){
     const g = document.getElementById('gingi');
     g.style.display = "block";
     const er = document.getElementById('img');
-    er.style.width = (widt/2-35)+'px';
+    er.style.width = 300+'px';
     const f = document.getElementById('main');
     f.style.display = "block";
     const n = document.getElementById('sidebar');
@@ -57,12 +57,15 @@ function size(){
     const x = document.getElementById('main');
     x.style.display = "block";
     const ern = document.getElementById('img');
-    if((widt/2-35)>=350){
+    if((widt/2-20)>=360){
       ern.style.width = 300+'px';
     } else {
-      ern.style.width = (widt/2-35)+'px';
+      ern.style.width = (widt/2-20)+'px';
     }
-    
+  }
+  if(widt<=370){
+    const er = document.getElementById('img');
+    er.style.width = 200+'px';
   }
 }
 size();

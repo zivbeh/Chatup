@@ -173,7 +173,7 @@ router.post('/newroom', async function(req, res, next) {
         req.flash('error', "you can't write your email in field");
         return res.redirect('/Chatup/NewRoom');
     }
-    if (array.length === 1){
+    if (users.length === 1){
         console.log('-----Check!!!1-----')
         const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': user.dataValues.id },
             include: [{
@@ -186,6 +186,7 @@ router.post('/newroom', async function(req, res, next) {
         });
         console.log(roon.length)
         if (roon.length != 0){
+            console.log('Choke')
             for (let index = 0; index < roon.length; index++) {
                 const element = roon[index];
                 const idr = element.dataValues.id;
@@ -207,13 +208,17 @@ router.post('/newroom', async function(req, res, next) {
                     return res.redirect('/Chatup/NewContact');
                 } else {
                     console.log('-----2-----')
-                    room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
+                    //room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
                 }
             }
+            console.log('notcheck')
+            room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
         } else {
+            console.log('problem')
             room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
         }
     } else {
+        console.log('big notcheck')
         room = await db.ChatRoom.create({roomName: req.body.roomName});
     }
         
@@ -235,10 +240,9 @@ router.post('/newroom', async function(req, res, next) {
 
 
 router.get('/Delete', async function(req, res, next) {
-    for (let index = 40; index < 44; index++) {
-        await db.Message.destroy({ where: { id: index }})
-    }
-    
+    await db.ChatRoom.destroy({ where: { id: 28 }});
+    await db.User_Rooms.destroy({ where: { id: 49 }});
+    await db.User_Rooms.destroy({ where: { id: 50 }});
     res.send('all messages deleted!');
 });
 

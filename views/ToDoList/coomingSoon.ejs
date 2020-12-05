@@ -3,42 +3,65 @@
 <title>To Do List</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="stylesheets/util.css">
+<link rel="stylesheet" type="text/css" href="stylesheets/main.css">
 <link rel="shortcut icon" href="/images/Ziv-logo.png" type="image/x-icon">
 <style>
-body,h1 {font-family: "Raleway", sans-serif}
-body, html {height: 100%}
-.bgimg {
-  background-image: url('https://p0.pikist.com/photos/323/102/bridge-river-bobrava-natural-park-trees-forest-bridge-stone-forest-nature.jpg');
-  min-height: 100%;
-  background-position: center;
-  background-size: cover;
+.big{
+  font-size: large;
 }
-h1, p{
-  color: rgb(210, 247, 247);
-}
-.Ziv-logo{
-  background-image: url("/images/Ziv-logo.png");
-  background-size: 30% 30%;
-  background-repeat: no-repeat;
+input {
+  border: none;
+  display: inline;
+  font-family: inherit;
+  font-size: inherit;
+  padding: none;
+  width: auto;
+  background: transparent;
+  color: rgb(204, 188, 42);
 }
 </style>
 <body>
 
-<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-  <div class="w3-display-topleft w3-padding-large w3-xlarge">
-    <img src="/images/Ziv-logo.png" class="Ziv-logo">
-  </div>
-  <div class="w3-display-middle">
-    <h1 class="w3-jumbo w3-animate-top">COMING SOON</h1>
-    <hr class="w3-border-grey" style="margin:auto;width:40%">
-    <p class="w3-large w3-center">ToDoList</p>
-  </div>
-  <div class="w3-display-bottomleft w3-padding-large">
-    Powered by Ziv Behar
-  </div>
-</div>
+  <div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table100" id="tableParent">
+				</div>
+			</div>
+		</div>
+	</div>
+  <script>
+    function Transformerr(Rows){
+        var rows = Rows;
+        var html = '<table>';
+        html += '<thead><tr class="table100-head">';
 
+        for( var j in rows[0] ) {
+        html += '<th>' + j + '</th>';
+        }
+        html += '</tr></thead><tbody>';
+
+        for( var i = 0; i < rows.length; i++) {
+          html += '<tr>';
+          for( var j in rows[i] ) {
+            if(rows[i][j].kynde == 'number'){
+              html += '<td><input type="number" value="' + rows[i][j].value + '" min="1" max="99"></td>';
+            } else if (rows[i][j].kynde == 'text'){
+              html += '<td>' + rows[i][j].value + '</td>';
+            }
+          }
+          html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+        document.getElementById('tableParent').innerHTML = html;
+    }
+
+    var row = [{ Name: { kynde: 'text', value: 'Eggs', done: false }, folder: { kynde: 'number', value: '3', done: false }, MANY: { kynde: 'number', value: '5', done: true } }]
+    console.log(row)
+    Transformerr(row)
+  </script>
 </body>
 </html>

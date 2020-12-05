@@ -5,18 +5,23 @@ const { Op } = require("sequelize");
 const liveUpdate1 = require("../liveupdate").flash;
 var flas = null;
 
-router.get('/', async function(req, res, next) {
-    const user = req.user;
-    if (!user){
-        req.flash('error', 'To get ChatUp you Have to login First');
-        res.redirect('/sessions');
-    }
+async function roomi(id){
+    var roomg = await db.Users.findOne({ where: { id: id },
+        include: [{
+            model: db.ChatRoom,
+            required: false,
+            through: {
+            model: db.User_Rooms,
+            }
+        }]
+    });
+    return roomg;
+}
 
-    var room;
-    var id = user.dataValues.id;
-    if(flas!=null){
-        liveUpdate1(flas);
-        room = await db.Users.findOne({ where: { id: id, '$ChatRooms.id$': { [Op.ne]: flas } },  // use Op [Op.ne]: flas
+async function doomi(id, flasi){
+    if(flasi!=null){
+        liveUpdate1(flasi);
+        var doom = await db.Users.findOne({ where: { id: id, '$ChatRooms.id$': { [Op.ne]: flasi } },  // use Op [Op.ne]: flas
         include: [{
             model: db.ChatRoom,
             required: false,
@@ -26,16 +31,34 @@ router.get('/', async function(req, res, next) {
         }]
         });
     } else {
-        room = await db.Users.findOne({ where: { id: id },
-        include: [{
-            model: db.ChatRoom,
-            required: false,
-            through: {
-            model: db.User_Rooms,
-            }
-        }]
-        });
+        doom = await roomi(id);
     }
+    return doom;
+}
+
+function roomArri(diction, room){
+    var roomArr = [];
+    for (let index = 0; index < room.dataValues.ChatRooms.length; index++) {
+        const element = room.dataValues.ChatRooms[index];
+        if(diction.hasOwnProperty(`${element.dataValues.id}`)){
+            roomArr.push(diction[element.dataValues.id]);
+        } else {
+            roomArr.push(element.dataValues.roomName);
+        }
+    }
+    return roomArr;
+}
+
+router.get('/', async function(req, res, next) {
+    const user = req.user;
+    if (!user){
+        req.flash('error', 'To get ChatUp you Have to login First');
+        res.redirect('/sessions');
+    }
+
+    var room;
+    var id = user.dataValues.id;
+    room = await doomi(id, flas);
 
     const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': id },
         include: [{
@@ -85,16 +108,21 @@ router.get('/', async function(req, res, next) {
     }
     console.log(diction,'dictonmsdaad')
 
-
-    const roomArr = [];
-    for (let index = 0; index < room.dataValues.ChatRooms.length; index++) {
-        const element = room.dataValues.ChatRooms[index];
-        if(diction.hasOwnProperty(`${element.dataValues.id}`)){
-            roomArr.push(diction[element.dataValues.id]);
-        } else {
-            roomArr.push(element.dataValues.roomName);
-        }
+    var roomArr;
+    var snitchel;
+    if(flas!=null && room == null){
+        console.log('Nothing, First Room')
+        snitchel = null;
+    } else if (room == null) {
+        room = await doomi(id, null);
+        
+        roomArr = roomArri(diction, room);
+        snitchel = 1;
+    } else {
+        roomArr = roomArri(diction, room);
+        snitchel = 1;
     }
+    console.log('39999999', flas, roomArr, snitchel, room)
 
     if(room === []){
         return res.redirect('/Chatup/NewContact');
@@ -121,7 +149,7 @@ router.get('/', async function(req, res, next) {
     //     liMess.push({ UserId: name, message: elm.message, id: userId });
     // }
 
-    res.render('ChatApp/app', { rooms: roomArr, user: user  });
+    res.render('ChatApp/app', { rooms: roomArr, user: user, snitchel: snitchel });
     flas = null;
 });
 
@@ -237,12 +265,10 @@ router.post('/newroom', async function(req, res, next) {
 });
 
 
-
-
 router.get('/Delete', async function(req, res, next) {
-    await db.ChatRoom.destroy({ where: { id: 28 }});
-    await db.User_Rooms.destroy({ where: { id: 49 }});
-    await db.User_Rooms.destroy({ where: { id: 50 }});
+    await db.ChatRoom.destroy({ where: { id: 5 }});
+    await db.User_Rooms.destroy({ where: { id: 10 }});
+    await db.User_Rooms.destroy({ where: { id: 9 }});
     res.send('all messages deleted!');
 });
 

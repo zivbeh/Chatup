@@ -48,7 +48,8 @@
     
     window.App = {
         createRoom(roomName) {
-            $roomList.append(`<li id="${$roomList[0].children.length+1}" class="room"><div id="Nope" class="parent"><span id="No" class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
+            console.log($roomList[0].children.length, $('.room-list')[0].children.length)
+            $('.room-list').append(`<li id="${$('.room-list')[0].children.length}" class="room"><div id="Nope" class="parent"><span id="No" class="roomname">${roomName}</span> <i class='material-icons remove'>delete</i></div></li>`)
         },
 
         deleteRoom(roomName) {
@@ -151,6 +152,7 @@
     $roomList.on('click', '.remove ', function (ev) {
 
         var Id = $(this.parentNode.parentNode).attr('id');
+        console.log(Id, this.parentNode.parentNode)
         server.deleteRoom(Id);
     });
 

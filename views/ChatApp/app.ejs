@@ -29,9 +29,12 @@
             <button class="btn-new-room"><a href="/Chatup/NewContact">Create Contact</a></button>
 
             <ul id="room-list" class="room-list">
-                <% for (let i = 0; i < rooms.length; i++) { %>
-                    <% const element = rooms[i]; %>
-                    <li id="<%= i %>" class="room"><div id="Nope" class="parent"><span id="No" class="roomname"><%= element %></span> <i class='material-icons remove'>delete</i></div></li>
+                <% if (snitchel!=null){ %>
+                    <% for (let i = 0; i < rooms.length; i++) { %>
+                        <% const element = rooms[i]; %>
+                        <% console.log(element, rooms, '-1-1-1---1-1-1-1-11--1-1-1') %>
+                        <li id="<%= i %>" class="room"><div id="Nope" class="parent"><span id="No" class="roomname"><%= element %></span> <i class='material-icons remove'>delete</i></div></li>
+                    <% } %>
                 <% } %>
             </ul>
         </div>

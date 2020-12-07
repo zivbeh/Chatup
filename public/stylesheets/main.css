@@ -257,7 +257,7 @@ tbody tr:hover {
   table tbody tr td:nth-child(1):before {
     content: "Date";
   }
-  table tbody tr td:nth-child(2):before {
+  table tbody tr td:nth-child(2):before { /* Make JS for this  */
     content: "Order ID";
   }
   table tbody tr td:nth-child(3):before {

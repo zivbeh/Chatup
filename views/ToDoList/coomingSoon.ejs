@@ -26,42 +26,16 @@ input {
 
   <div class="limiter">
 		<div class="container-table100">
+      <h1 id="h1">ToDoList</h1>
 			<div class="wrap-table100">
 				<div class="table100" id="tableParent">
 				</div>
 			</div>
 		</div>
-	</div>
-  <script>
-    function Transformerr(Rows){
-        var rows = Rows;
-        var html = '<table>';
-        html += '<thead><tr class="table100-head">';
-
-        for( var j in rows[0] ) {
-        html += '<th>' + j + '</th>';
-        }
-        html += '</tr></thead><tbody>';
-
-        for( var i = 0; i < rows.length; i++) {
-          html += '<tr>';
-          for( var j in rows[i] ) {
-            if(rows[i][j].kynde == 'number'){
-              html += '<td><input type="number" value="' + rows[i][j].value + '" min="1" max="99"></td>';
-            } else if (rows[i][j].kynde == 'text'){
-              html += '<td>' + rows[i][j].value + '</td>';
-            }
-          }
-          html += '</tr>';
-        }
-
-        html += '</tbody></table>';
-        document.getElementById('tableParent').innerHTML = html;
-    }
-
-    var row = [{ Name: { kynde: 'text', value: 'Eggs', done: false }, folder: { kynde: 'number', value: '3', done: false }, MANY: { kynde: 'number', value: '5', done: true } }]
-    console.log(row)
-    Transformerr(row)
-  </script>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="/javascripts/ToDoList.js"></script>
 </body>
 </html>

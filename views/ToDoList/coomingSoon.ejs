@@ -1,32 +1,22 @@
 <!DOCTYPE html>
-<html>
-<title>To Do List</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="stylesheets/util.css">
-<link rel="stylesheet" type="text/css" href="stylesheets/main.css">
-<link rel="shortcut icon" href="/images/Ziv-logo.png" type="image/x-icon">
-<style>
-.big{
-  font-size: large;
-}
-input {
-  border: none;
-  display: inline;
-  font-family: inherit;
-  font-size: inherit;
-  padding: none;
-  width: auto;
-  background: transparent;
-  color: rgb(204, 188, 42);
-}
-</style>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="stylesheets/util.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+  <link rel="shortcut icon" href="/images/Ziv-logo.png" type="image/x-icon">
+  <title>To Do List</title>
+</head>
+<%- include('../navbar'); -%>
 <body>
-
+  
   <div class="limiter">
 		<div class="container-table100">
-      <h1 id="h1">ToDoList</h1>
+      <h1 id="h">ToDoList</h1>
+      <button id="myBtn">click</button>
 			<div class="wrap-table100">
 				<div class="table100" id="tableParent">
 				</div>
@@ -37,5 +27,6 @@ input {
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
   <script src="/javascripts/ToDoList.js"></script>
+
 </body>
 </html>

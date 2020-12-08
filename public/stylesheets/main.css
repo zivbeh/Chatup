@@ -221,8 +221,22 @@ tbody tr:hover {
   padding-right: 62px;
 }
 
+.big{
+  font-size: large;
+}
+input {
+  border: none;
+  display: inline;
+  font-family: inherit;
+  font-size: inherit;
+  padding: none;
+  width: auto;
+  background: transparent;
+  color: rgb(204, 188, 42);
+}
 
-@media screen and (max-width: 992px) {
+
+@media screen and (max-width: 740px) {
   table {
     display: block;
   }

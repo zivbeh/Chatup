@@ -1,6 +1,6 @@
 function Transformerr(Rows){
     var rows = Rows;
-    var html = '<table>';
+    var html = '<table id="table">';
     html += '<thead><tr class="table100-head">';
 
     for( var j in rows[0] ) {
@@ -27,6 +27,7 @@ function Transformerr(Rows){
 
     html += '</tbody></table>';
     document.getElementById('tableParent').innerHTML = html;
+    console.log('transformerr Donnnne')
 }
 
 var object = {};
@@ -38,6 +39,8 @@ function Coder(Name, kynde, value){
   }
   console.log(object)
 }
+
+//document.getElementById('h').addEventListener('click', Transformerr(row));
 
 var row = [{ Name: { kynde: 'text', value: 'Eggs' }, folder: { kynde: 'number', value: '3' }, Quality: { kynde: 'number', value: '12' }, Done: false },
 { Name: { kynde: 'text', value: 'Eggs' }, folder: { kynde: 'number', value: '4' }, Quality: { kynde: 'number', value: '12' }, Done: true }]
@@ -52,17 +55,19 @@ Transformerr(row)
 
 const $input = $('table');
 $input.on('input propertychange', 'td', function (e) {
+    console.log('change')
     var $th = $('table').find('th').eq($(this).index());
     var ThValue = $th.get()[0].firstChild.textContent;
     var kynde = this.firstChild.type;
     console.log(ThValue, this.firstChild.type, this.parentNode.id, kynde)
-    object = {};
-    Coder(`${ThValue}`, kynde, this.firstChild.value);
+    // object = {};
+    // Coder(`${ThValue}`, kynde, this.firstChild.value);
     //make the changes in the object be changed in the row
     var trPlace = this.parentNode.id;
     var pl = row[trPlace];
     console.log('-fsd', pl, pl[ThValue], '-----12-----', this.firstChild.value, pl[ThValue]) // <--fix this
-    if(pl[ThValue] == 'Done'){
+    if (typeof pl[ThValue] === "boolean"){
+        console.log('bbb')
         if(this.firstChild.checked){
             pl[ThValue] = true;
         } else {
@@ -71,6 +76,7 @@ $input.on('input propertychange', 'td', function (e) {
     } else {
         pl[ThValue].value = this.firstChild.value;
     }
+    console.log(row, pl[ThValue])
 });
 
 $(':input[type="number"]').on('input propertychange', function (e) {
@@ -81,3 +87,11 @@ $(':input[type="number"]').on('input propertychange', function (e) {
         e.target.value = 1;
     }
 });
+
+document.getElementById("myBtn").addEventListener("click", function() {
+    console.log('transformerr', row)
+    var element = document.getElementById("table");
+    element.parentNode.removeChild(element);
+    console.log('Done')
+    Transformerr(row);
+}); 

@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
-    
+    <title>Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/style.css' />
@@ -17,11 +16,11 @@
               <h1>Is Open</h1>
               <p>After 2 monthes of work it finaly happenes.<br>Now you can CHAT without any problems.   </p>
               <% if (user1 != null) { %>
-                <p>Nice to see you: <%= user1 %></p>
+                <p>Nice to see you: <u><%= user1 %></u></p>
+                <ul class="messages"></ul>
                 <form action="/sessions/logout" method="POST">
                   <input type="submit" class="btn" value="Logout" />
                 </form>
-                <ul class="messages"></ul>
               <% } else {  %>
                 <div class="cta">
                   <a href="/Chatup" class="btn">Start Now</a>
@@ -107,7 +106,6 @@
         color: #fafafa;
         text-transform: uppercase;
         transform: translateY(20%);
-
     }
     .main-message h3{
         font-size: 1.6rem;

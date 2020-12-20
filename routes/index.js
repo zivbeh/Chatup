@@ -48,7 +48,7 @@ router.post('/forgotPassword', function(req, res, next) {
 
       await user.update({
         resetPasswordToken: token,
-        resetPasswordExpires: Date.now() + 3600000 // 1h
+        resetPasswordExpires: Date.now() + 3600000
       })
 
       mailer.sender(user.Email, 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
@@ -102,8 +102,6 @@ router.post('/reset/:token', function(req, res) {
         mapToModel: true
       });
     
-      //const user = await User.findOne({ where: { resetPasswordToken: req.params.token, resetPasswordExpires: Object.values({ gt:  Date.now() }) } });
-    
       console.log('Here is the userID:    ', user1[0].dataValues.id);
     
       const user = await User.findByPk(user1[0].dataValues.id);
@@ -125,12 +123,10 @@ router.post('/reset/:token', function(req, res) {
 
       req.logIn(user, function(err) {
         console.log('Log in the User:    ', user.Name);
-        //req.flash('success',`User connected:  ${user.Name}`);
         done(err, user);
       });
 
       mailer.sender(user.Email, 'Hello,\n\n' + 'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n', 'Your password has been changed');
-      //req.flash('success', 'Success! Your password has been changed.');
     }
   ], function(err) {
     res.redirect('/');

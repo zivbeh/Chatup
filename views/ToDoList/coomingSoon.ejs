@@ -15,11 +15,26 @@
   
   <div class="limiter">
 		<div class="container-table100">
+      <button id="plus" >Add Row ,,,,,,,,, , , ,.</button>
+      <input type="number" id="numberr" value="1">
       <h1 id="h">ToDoList</h1>
-      <button id="myBtn">click</button>
 			<div class="wrap-table100">
 				<div class="table100" id="tableParent">
-				</div>
+        </div>
+        <div class="dropdown">
+          <button id="plusTh" class="plusTh dropbtn" style="font-size:24px"><i class="fa fa-plus"></i></button>
+          <div class="dropdown-content">
+            <button class="textSel DropdownButton" id="textSel">
+              <Span>Text:</Span><input type="text" value="Text">
+            </button>
+            <button class="numSel DropdownButton" id="numSel">
+              <Span>Number:</Span><input type="number" value="3">
+            </button>
+            <button class="checkSel DropdownButton" id="checkSel">
+              <Span>CheckBox:</Span><br><input type="checkbox" value="checkbox" checked>
+            </button>
+          </div>
+        </div>
 			</div>
 		</div>
   </div>

@@ -5,7 +5,6 @@ const db = require('../models');
 const User = db.users;
 const socketio = require('../liveupdate');
 
-/* GET users listing. */
 router.get('/', function(req, res, next) {
     
   res.render('sessions/new', { error: req.flash('error'), user: req.user});
@@ -19,7 +18,6 @@ passport.authenticate('local', {
     }),
     function(req, res, next) {
         console.log('new user connected --------------------------------------12312312312312321');
-        //socketio.io.sockets.emit('msg', `New user connected: ${req.user}`);
     }
 );
 

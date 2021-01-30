@@ -2,7 +2,7 @@
 This is my cool application
 \| it allows:
 * Communicate between friends
-* create rooms
+ create rooms
 \| How to use:
 * Download the files or clone the repository
 * Open command line

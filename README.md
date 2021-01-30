@@ -1,9 +1,9 @@
 # Chatup
 This is my cool application
-it allows:
+\| it allows:
 * Communicate between friends
 * create rooms
-How to use:
+\| How to use:
 * Download the files or clone the repository
 * Open command line
 * Get into your folder in the cmd

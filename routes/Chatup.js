@@ -88,16 +88,13 @@ router.get('/', async function(req, res, next) {
         var name;
         var idn;
         if(user.dataValues.id === value0){
-            console.log('-----1-----')
             name = await db.Contacts.findOne({ where: { RealUserId: value1, UserId: value0 } });
             idn=value1;
         } else {
-            console.log('-----0-----')
             name = await db.Contacts.findOne({ where: { RealUserId: value0, UserId: value1 } });
             idn=value0;
         }
 
-        console.log(name)
         if (name == null){
             const namit = await db.Users.findByPk(idn);
             name = namit.dataValues.Name;
@@ -106,12 +103,10 @@ router.get('/', async function(req, res, next) {
             diction[element.dataValues.id] = name.dataValues.userName;
         }
     }
-    console.log(diction,'dictonmsdaad')
 
     var roomArr;
     var snitchel;
     if(flas!=null && room == null){
-        console.log('Nothing, First Room')
         snitchel = null;
     } else if (room == null) {
         room = await doomi(id, null);
@@ -122,7 +117,6 @@ router.get('/', async function(req, res, next) {
         roomArr = roomArri(diction, room);
         snitchel = 1;
     }
-    console.log('39999999', flas, roomArr, snitchel, room)
 
     if(room === []){
         return res.redirect('/Chatup/NewContact');
@@ -148,7 +142,6 @@ router.post('/newcontact', async function(req, res, next) {
         req.flash('error', 'user Email is invalid');
         return res.redirect('/Chatup/NewContact');
     }
-    console.log(changeuser, checkEmail, '-----------dsa')
     const contactEmail = await db.Contacts.findOne({ where: { RealUserId: checkEmail.dataValues.id, UserId: user.dataValues.id }});
     if (contactEmail){
         contactEmail.userName = req.body.ContactName;
@@ -159,7 +152,6 @@ router.post('/newcontact', async function(req, res, next) {
             UserId: user.dataValues.id, userName: req.body.ContactName, RealUserId: checkEmail.dataValues.id
         });
     }
-    console.log('-------------------------------=====-----------------------------')
 
     res.redirect('/Chatup');
 });
@@ -171,15 +163,12 @@ router.post('/newroom', async function(req, res, next) {
         Email: array
     }});
     var room;
-    console.log(users)
-    console.log('-----Check!!!-----')
     const TF = array.find(element => element === user.dataValues.Email);
     if(TF){
         req.flash('error', "you can't write your email in field");
         return res.redirect('/Chatup/NewRoom');
     }
     if (users.length === 1){
-        console.log('-----Check!!!1-----')
         const roon = await db.ChatRoom.findAll({ where: { Due: true, '$Users.id$': user.dataValues.id },
             include: [{
                 model: db.Users,
@@ -189,9 +178,7 @@ router.post('/newroom', async function(req, res, next) {
                 }
             }]
         });
-        console.log(roon.length)
         if (roon.length != 0){
-            console.log('Choke')
             for (let index = 0; index < roon.length; index++) {
                 const element = roon[index];
                 const idr = element.dataValues.id;
@@ -204,48 +191,31 @@ router.post('/newroom', async function(req, res, next) {
                         }
                     }]
                 });
-                console.log(li.dataValues.Users, '000000000000000000000000000000000')
                 var value0 = li.dataValues.Users[0].dataValues.id;
                 var value1 = li.dataValues.Users[1].dataValues.id;
                 if(user.dataValues.id === value0 && users[0].dataValues.id === value1 || user.dataValues.id === value1 && users[0].dataValues.id === value0){
-                    console.log('-----1-----')
                     req.flash('error', 'Already have a room with this friend');
                     return res.redirect('/Chatup/NewContact');
                 } else {
-                    console.log('-----2-----')
                 }
             }
-            console.log('notcheck')
             room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
         } else {
-            console.log('problem')
             room = await db.ChatRoom.create({roomName: req.body.roomName, Due: true});
         }
     } else {
-        console.log('big notcheck')
         room = await db.ChatRoom.create({roomName: req.body.roomName});
     }
         
     const arr = [];
-    console.log('-------------------NewRoomCreated----------------------');
     for (let i = 0; i < users.length; i++) {
         const useron = users[i];
         const a = await useron.addChatRoom(room, { through: {} });
         arr.push(a);
-        console.log('work');
     }
     await user.addChatRoom(room, { through: {} });
     flas = room.dataValues.id;
-    console.log(flas,'------------------new-')
     res.redirect('/Chatup');
-});
-
-
-router.get('/Delete', async function(req, res, next) {
-    await db.ChatRoom.destroy({ where: { id: 5 }});
-    await db.User_Rooms.destroy({ where: { id: 10 }});
-    await db.User_Rooms.destroy({ where: { id: 9 }});
-    res.send('all messages deleted!');
 });
 
 module.exports = router;

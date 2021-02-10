@@ -8,7 +8,6 @@ const session = require('cookie-session')({
 });
 var flas = 'iceCream';
 function flash(flash){
-    console.log(flash,'--------------------123456z-----------------------');
     flas = flash;
 }
 
@@ -21,7 +20,6 @@ function init(server) {
 
         let req = { connection: { encrypted: false }, headers: { cookie: cookieString } };
         let res = { getHeader: () => { }, setHeader: () => { } };
-        console.log(socket.id,'----------------------d---------------------------')
 
         var ctionary = {};
         async function resetIdLidictionary(iid){
@@ -40,7 +38,6 @@ function init(server) {
                 const element = allRoms.dataValues.ChatRooms[index];
                 ctionary[element.dataValues.id] = index;
             }
-            console.log(ctionary);
             return ctionary;
         }
 
@@ -79,7 +76,6 @@ function init(server) {
             if(room===[]){
                 console.log('problem');
             } else {
-                console.log(room[0].dataValues.Users.length,'----------------------------------------------------asasa');
                 if(room[0].dataValues.Users.length === 2){
                     const element = room[0];
                     const id = element.dataValues.id;
@@ -95,7 +91,6 @@ function init(server) {
 
                     var value0 = li.dataValues.Users[0].dataValues.id;
                     var value1 = li.dataValues.Users[1].dataValues.id;
-                    console.log(value1,value0,'-fsd-fsd')
                     var connectedClients = Object.keys(io.clients().connected);
                     const dict = {};
                     for (var key in connectedClients) {
@@ -106,7 +101,6 @@ function init(server) {
                             dict[d] = idr;
                         }
                     }
-                    console.log(dict, Object.keys(dict).length)
                     var OtherUser;
                     var idn;
                     var NoId;
@@ -120,7 +114,6 @@ function init(server) {
                         NoId=value0;
                     }
                     var name3 = await db.Contacts.findOne({ where: { UserId: socket.data.user.dataValues.id, RealUserId: idn } });
-                    console.log(name3)
                     if(name3==null){
                         const namit = await db.Users.findByPk(idn);
                         io.to(socket.id).emit('createRoom', namit.dataValues.Name);
@@ -129,7 +122,6 @@ function init(server) {
                     }
                     if(Object.keys(dict).length==2){
                         var name4 = await db.Contacts.findOne({ where: { UserId: NoId, RealUserId: socket.data.user.dataValues.id } });
-                        console.log(name4)
                         if(name4==null){
                             const namit1 = await db.Users.findByPk(NoId);
                             io.to(OtherUser).emit('createRoom', namit1.dataValues.Name);
@@ -148,7 +140,6 @@ function init(server) {
         socket.on('deleteRoom', async function(Name) {
             const dc =  await resetIdLidictionary(socket.data.user.dataValues.id);
             var c = Object.keys(dc).find(key => dc[key] == Name);
-            console.log(c, Name, dc)
             const roo = await db.ChatRoom.findOne({ where: {id: c}, include: [{
                 model: db.Users,
                 required: false,
@@ -156,10 +147,8 @@ function init(server) {
                     model: db.User_Rooms,
                 }
             }] });
-            console.log(roo)
 
             if(roo.dataValues.Users.length == 2){
-                console.log('yangaaaaaaaaaaaaaaaaaaa')
                 var value0 = roo.dataValues.Users[0].dataValues.id;
                 var value1 = roo.dataValues.Users[1].dataValues.id;
                 var connectedClients = Object.keys(io.clients().connected);
@@ -173,15 +162,12 @@ function init(server) {
                         dict['userId'] = idr;
                     }
                 }
-                console.log(dict)
                 
                 if(Object.keys(dict).length==2){//will not work if 3 people are connected you need to compare them with the you know
                     var socketId = dict['socketId'];
                     var userId = dict['userId'];
                     var dd = await resetIdLidictionary(userId);
-                    console.log(dd,'------123')
                     var realName = dd[c];
-                    console.log(realName,dd[realName],Name,c,'------123')
                     
                     io.to(socketId).emit('deleteRoom', dd[c]);
                     io.to(socket.id).emit('deleteRoom', Name);
@@ -194,7 +180,6 @@ function init(server) {
                 // await roo.destroy();
                 // io.emit('deleteRoom', Name);
             } else {
-                console.log('yangaaaaaaaaaaaaaaaaaaaDODODODODODODODOODOD')
                 await db.User_Rooms.destroy({ where: { ChatRoomId: roo.dataValues.id, UserId: socket.data.user.dataValues.id }});
                 io.to(socket.id).emit('deleteRoom', Name);
             }
@@ -219,7 +204,6 @@ function init(server) {
                 const socketid = arr[b];
                 const us = io.sockets.connected[socketid];
                 const n = await db.Contacts.findOne({where: { RealUserId: from.dataValues.id, UserId: us.data.user.dataValues.id } });
-                console.log(n)
                 if (n!=null){
                     const frm = n.dataValues.userName;
                     io.to(socketid).emit('message', { text: text, from: frm, id: id });
@@ -243,7 +227,6 @@ function init(server) {
             if(oldRoom=='NoRoom'){
                 d='NoRoom';
             }
-            console.log(dc, d, '---------------123123--------------------', c, newRoom, oldRoom)
 
             const room = await db.ChatRoom.findAll({ where: { id: c }, include: [{
                 model: db.Users,
@@ -264,9 +247,7 @@ function init(server) {
                 var value = array[i].dataValues;
                 dictionary[value.RealUserId] = value.userName;
             }
-            console.log(dictionary)
             const messages = await db.ChatRoom.findOne({ where: { id: a }, include: [db.Message]});
-            console.log(messages, '--------------------------------', a)
             if (messages.dataValues.Messages.length === 0){
                 io.to(socket.id).emit('message', { from: 'Server', text: `No messages Yet`});
             } else {
@@ -274,7 +255,6 @@ function init(server) {
                 var liMess = [];
                 for (let c = 0; c < m.length; c++){
                     var elm = m[c].dataValues;
-                    console.log(elm.message,'-4324809253hjds')
                     var userId = elm.UserId;
                     var name = dictionary[userId];
                     if (name === undefined){ // use the regular name
@@ -282,7 +262,6 @@ function init(server) {
                         name = userr.dataValues.Name;
                     }
                     liMess.push({ from: name, text: elm.message });
-                    console.log(name)
                 }
                 for(let b of liMess){
                     io.to(socket.id).emit('message', { text: b.text, from: b.from, id: socket.data.user.dataValues.id});

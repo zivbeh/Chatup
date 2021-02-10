@@ -53,7 +53,11 @@
         },
 
         deleteRoom(roomName) {
-            
+            if ($roomList.length == 1) {
+                document.getElementById('send').style.display = 'none';
+                document.getElementById('cons').style.display = "none";
+                document.getElementById('clear').style.display = "grid";
+            }
             $roomList.find(`#${roomName}`)[0].parentNode.removeChild($roomList.find(`#${roomName}`)[0]); 
         },
 

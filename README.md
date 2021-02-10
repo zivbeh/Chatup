@@ -8,4 +8,5 @@ This is my cool application
 * Open command line
 * Get into your folder in the cmd
 * Write this line: "npm install" || You have to have npm
-* Write aty the cmd "npx sequelize-cli db:migrate" || You have to have  "DB Browser (SQLite)" to view th database
+* Write at the cmd "npx sequelize-cli db:migrate" || You have to have  "DB Browser (SQLite)" to view th database
+* Write at the cmd "npm run start"

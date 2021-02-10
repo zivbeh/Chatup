@@ -12,7 +12,7 @@ passport.use(new LocalStrategy(
         const user = await User.findOne({ where: { Email: email } }, async function (err, user) {
             if (err) { return done(err); }
             if (!user) {
-                return done(null, false, { message: 'Invalid email/password1' }); //// fix 
+                return done(null, false, { message: 'Invalid email/password1' }); 
             }
         });
         
@@ -52,7 +52,6 @@ passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
             return done(null, user);
         } else {
             return done(null, false);
-            // or you could create a new account
         }
     });
 }));

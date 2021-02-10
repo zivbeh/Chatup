@@ -17,7 +17,6 @@ function init(server) {
 
     io.on('connection', async socket => {
         let cookieString = socket.request.headers.cookie;
-
         let req = { connection: { encrypted: false }, headers: { cookie: cookieString } };
         let res = { getHeader: () => { }, setHeader: () => { } };
 
@@ -33,7 +32,6 @@ function init(server) {
                 }
             }]
             });
-
             for (let index = 0; index < allRoms.dataValues.ChatRooms.length; index++) {
                 const element = allRoms.dataValues.ChatRooms[index];
                 ctionary[element.dataValues.id] = index;

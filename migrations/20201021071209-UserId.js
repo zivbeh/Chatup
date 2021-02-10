@@ -9,7 +9,6 @@ module.exports = {
       onDelete: 'CASCADE'
     });
   },
-
   down: (queryInterface, Sequelize) => {
     return queryInterface.removeColumn('Contacts', 'UserId');
   }

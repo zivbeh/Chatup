@@ -1,9 +1,17 @@
 # Chatup
 This is my cool application
-\| it allows:
-* Communicate between friends
-* create rooms
-\| How to use:
+\
+| It allows:
+* Texting and Chating with friends
+* group chats
+* giving friends different names than what they class themselves
+* infinite color themes management
+* User authentication
+* 2 step verfication with email
+* notifications
+* search functions
+\
+| How to use:
 * Download the files or clone the repository
 * Open command line
 * Get into your folder in the cmd

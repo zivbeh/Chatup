@@ -1,7 +1,7 @@
 # Chatup
-This is my cool application
-\
-| It allows:
+This is my cool communication application
+
+## It allows:
 * Texting and Chating with friends
 * group chats
 * giving friends different names than what they class themselves
@@ -11,8 +11,8 @@ This is my cool application
 * notifications
 * search functions
 * SQL database support
-\
-| How to use:
+
+## How to use:
 * Download the files or clone the repository
 * Open command line
 * Get into your folder in the cmd

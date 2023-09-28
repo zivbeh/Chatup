@@ -10,6 +10,7 @@ This is my cool application
 * 2 step verfication with email
 * notifications
 * search functions
+* SQL database support
 \
 | How to use:
 * Download the files or clone the repository
